@@ -1,0 +1,4920 @@
+{
+  "searchCriteria": {
+    "origin": {
+      "city": "Boston",
+      "state": "MA",
+      "latitude": 42.35888,
+      "longitude": -71.056804
+    },
+    "destination": {
+      "city": "Dallas",
+      "state": "TX",
+      "latitude": 32.781339,
+      "longitude": -96.799759
+    },
+    "equipment": [
+      "V"
+    ],
+    "availability": {
+      "earliest": "2025-11-20T19:50:45.675Z",
+      "latest": "2025-12-05T19:50:45.675Z"
+    },
+    "options": {
+      "resultSize": 200,
+      "sortBy": "RATE_PER_MILE",
+      "order": "DESC",
+      "maxOriginDeadheadMiles": 100,
+      "maxDestinationDeadheadMiles": 100
+    }
+  },
+  "loads": [
+    {
+      "id": "KL9GEejF+ZS12CG3X",
+      "origin": {
+        "latitude": 42.35833,
+        "longitude": -71.06028,
+        "city": "Boston",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 32.78333,
+        "longitude": -96.8,
+        "city": "Dallas",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 30000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 3000.0000492,
+        "currency": "USD",
+        "ratePerMile": 1.7006803
+      },
+      "distanceMiles": 1764,
+      "estimatedDurationMinutes": 2177,
+      "metadata": {
+        "matchId": "KL9GEejF+ZS12CG3X",
+        "postingId": "ZS12CG3X",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejF+ZS12CD5e",
+      "origin": {
+        "latitude": 42.16,
+        "longitude": -72.47639,
+        "city": "Ludlow",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 33.57722,
+        "longitude": -96.17806,
+        "city": "Bonham",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T18:37:48Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 10000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1656,
+      "estimatedDurationMinutes": 2047,
+      "metadata": {
+        "matchId": "KL9GEejF+ZS12CD5e",
+        "postingId": "ZS12CD5e",
+        "originDeadheadMiles": 83,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Integrity Express Logistics LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejF+ZS12CDgH",
+      "origin": {
+        "latitude": 42.16,
+        "longitude": -72.47639,
+        "city": "Ludlow",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 33.57722,
+        "longitude": -96.17806,
+        "city": "Bonham",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 10000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1656,
+      "estimatedDurationMinutes": 2047,
+      "metadata": {
+        "matchId": "KL9GEejF+ZS12CDgH",
+        "postingId": "ZS12CDgH",
+        "originDeadheadMiles": 83,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Integrity Express Logistics LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejF+ZS12CaDV",
+      "origin": {
+        "latitude": 43.19417,
+        "longitude": -71.15139,
+        "city": "Northwood",
+        "state": "NH"
+      },
+      "destination": {
+        "latitude": 32.78333,
+        "longitude": -96.8,
+        "city": "Dallas",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 45000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 2799.999972,
+        "currency": "USD",
+        "ratePerMile": 1.540154
+      },
+      "distanceMiles": 1818,
+      "estimatedDurationMinutes": 2242,
+      "metadata": {
+        "matchId": "KL9GEejF+ZS12CaDV",
+        "postingId": "ZS12CaDV",
+        "originDeadheadMiles": 73,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "American Transport Group Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS127Jav",
+      "origin": {
+        "latitude": 41.69194,
+        "longitude": -71.37917,
+        "city": "Warwick",
+        "state": "RI"
+      },
+      "destination": {
+        "latitude": 37.544064,
+        "longitude": -77.32357,
+        "city": "Henrico",
+        "state": "VA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 23621,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 521,
+      "estimatedDurationMinutes": 685,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS127Jav",
+        "postingId": "ZS127Jav",
+        "originDeadheadMiles": 62,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "RXO Capacity Solutions LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12BLhb",
+      "origin": {
+        "latitude": 42.97611,
+        "longitude": -71.69444,
+        "city": "New Boston",
+        "state": "NH"
+      },
+      "destination": {
+        "latitude": 26.1,
+        "longitude": -98.26278,
+        "city": "Hidalgo",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T17:14:45.78Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 2214,
+      "estimatedDurationMinutes": 2717,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12BLhb",
+        "postingId": "ZS12BLhb",
+        "originDeadheadMiles": 67,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "FiveG Logistic Corporation",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129NgK",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 39.29028,
+        "longitude": -76.6125,
+        "city": "Baltimore",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 398,
+      "estimatedDurationMinutes": 538,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129NgK",
+        "postingId": "ZS129NgK",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Great Lakes Transport Solution Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129Nm4",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.03778,
+        "longitude": -76.30583,
+        "city": "Lancaster",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 357,
+      "estimatedDurationMinutes": 488,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129Nm4",
+        "postingId": "ZS129Nm4",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Great Lakes Transport Solution Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129PkK",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.01861,
+        "longitude": -78.50417,
+        "city": "Bedford",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 493,
+      "estimatedDurationMinutes": 652,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129PkK",
+        "postingId": "ZS129PkK",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Great Lakes Transport Solution Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129Nm5",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 39.29028,
+        "longitude": -76.6125,
+        "city": "Baltimore",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 398,
+      "estimatedDurationMinutes": 538,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129Nm5",
+        "postingId": "ZS129Nm5",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Great Lakes Transport Solution Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129NSL",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.06976,
+        "longitude": -74.84184,
+        "city": "Burlington",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 276,
+      "estimatedDurationMinutes": 391,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129NSL",
+        "postingId": "ZS129NSL",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Great Lakes Transport Solution Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129NMk",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 36.41944,
+        "longitude": -82.30417,
+        "city": "Piney Flats",
+        "state": "TN"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-22T08:00:00Z",
+        "latest": "2025-11-23T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-23T13:00:00.000Z",
+        "latest": "2025-11-27T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 811,
+      "estimatedDurationMinutes": 1033,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129NMk",
+        "postingId": "ZS129NMk",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Great Lakes Transport Solution Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129NJb",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 36.41944,
+        "longitude": -82.30417,
+        "city": "Piney Flats",
+        "state": "TN"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-22T08:00:00Z",
+        "latest": "2025-11-23T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-23T13:00:00.000Z",
+        "latest": "2025-11-27T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 811,
+      "estimatedDurationMinutes": 1033,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129NJb",
+        "postingId": "ZS129NJb",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Great Lakes Transport Solution Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129NJa",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.86833,
+        "longitude": -74.64083,
+        "city": "Succasunna",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 241,
+      "estimatedDurationMinutes": 349,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129NJa",
+        "postingId": "ZS129NJa",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Great Lakes Transport Solution Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129NJY",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 39.29028,
+        "longitude": -76.6125,
+        "city": "Baltimore",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-22T08:00:00Z",
+        "latest": "2025-11-23T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-23T13:00:00.000Z",
+        "latest": "2025-11-27T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 398,
+      "estimatedDurationMinutes": 538,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129NJY",
+        "postingId": "ZS129NJY",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Great Lakes Transport Solution Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS128des",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 39.23972,
+        "longitude": -76.68056,
+        "city": "Halethorpe",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-22T22:00:00Z",
+        "latest": "2025-11-23T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-23T13:00:00.000Z",
+        "latest": "2025-11-27T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 20000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 401,
+      "estimatedDurationMinutes": 541,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS128des",
+        "postingId": "ZS128des",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Molo Solutions LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12CdFT",
+      "origin": {
+        "latitude": 42.525,
+        "longitude": -71.76028,
+        "city": "Leominster",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 34.55194,
+        "longitude": -77.92639,
+        "city": "Burgaw",
+        "state": "NC"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T12:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 22858,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1099.9999779,
+        "currency": "USD",
+        "ratePerMile": 1.4304291
+      },
+      "distanceMiles": 769,
+      "estimatedDurationMinutes": 983,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12CdFT",
+        "postingId": "ZS12CdFT",
+        "originDeadheadMiles": 43,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "High Tide Logistics Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+DS3W1q0y",
+      "origin": {
+        "latitude": 42.69861,
+        "longitude": -71.13556,
+        "city": "N Andover",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.79444,
+        "longitude": -80.13694,
+        "city": "Zelienople",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-25T08:00:00Z",
+        "latest": "2025-11-25T08:00:00Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-26T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 772,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1000.0000351,
+        "currency": "USD",
+        "ratePerMile": 1.6863407
+      },
+      "distanceMiles": 593,
+      "estimatedDurationMinutes": 772,
+      "metadata": {
+        "matchId": "KL9GEejR+DS3W1q0y",
+        "postingId": "DS3W1q0y",
+        "originDeadheadMiles": 28,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Ryan Transportation Service Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS127mvv",
+      "origin": {
+        "latitude": 42.525,
+        "longitude": -71.76028,
+        "city": "Leominster",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.44361,
+        "longitude": -76.42861,
+        "city": "Fredericksburg",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 40000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 339,
+      "estimatedDurationMinutes": 467,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS127mvv",
+        "postingId": "ZS127mvv",
+        "originDeadheadMiles": 43,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "RXO Capacity Solutions LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12Ckwc",
+      "origin": {
+        "latitude": 41.82389,
+        "longitude": -71.41333,
+        "city": "Providence",
+        "state": "RI"
+      },
+      "destination": {
+        "latitude": 42.6525,
+        "longitude": -73.75667,
+        "city": "Albany",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43500,
+        "lengthFeet": 48,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 164,
+      "estimatedDurationMinutes": 257,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12Ckwc",
+        "postingId": "ZS12Ckwc",
+        "originDeadheadMiles": 50,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12CkUr",
+      "origin": {
+        "latitude": 43.605,
+        "longitude": -70.59361,
+        "city": "Hollis Ctr",
+        "state": "ME"
+      },
+      "destination": {
+        "latitude": 40.89889,
+        "longitude": -74.09306,
+        "city": "Saddle Brook",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 41815,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 309,
+      "estimatedDurationMinutes": 431,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12CkUr",
+        "postingId": "ZS12CkUr",
+        "originDeadheadMiles": 98,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "RXO Capacity Solutions LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS127jLX",
+      "origin": {
+        "latitude": 42.03333,
+        "longitude": -71.21944,
+        "city": "Mansfield",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.68833,
+        "longitude": -75.22111,
+        "city": "Easton",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-25T08:00:00Z",
+        "latest": "2025-11-26T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-26T13:00:00.000Z",
+        "latest": "2025-11-30T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 18000,
+        "lengthFeet": 48,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 278,
+      "estimatedDurationMinutes": 394,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS127jLX",
+        "postingId": "ZS127jLX",
+        "originDeadheadMiles": 33,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12BvvA",
+      "origin": {
+        "latitude": 42.88056,
+        "longitude": -71.32778,
+        "city": "Derry",
+        "state": "NH"
+      },
+      "destination": {
+        "latitude": 42.7925,
+        "longitude": -73.68167,
+        "city": "Waterford",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43500,
+        "lengthFeet": 48,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 204,
+      "estimatedDurationMinutes": 305,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12BvvA",
+        "postingId": "ZS12BvvA",
+        "originDeadheadMiles": 42,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12CG3X",
+      "origin": {
+        "latitude": 42.35833,
+        "longitude": -71.06028,
+        "city": "Boston",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 32.78333,
+        "longitude": -96.8,
+        "city": "Dallas",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 30000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 3000.0000492,
+        "currency": "USD",
+        "ratePerMile": 1.7006803
+      },
+      "distanceMiles": 1764,
+      "estimatedDurationMinutes": 2177,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12CG3X",
+        "postingId": "ZS12CG3X",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12BBTj",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 43.033,
+        "longitude": -77.65,
+        "city": "W Henrietta",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-23T16:00:00Z",
+        "latest": "2025-11-24T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-24T13:00:00.000Z",
+        "latest": "2025-11-28T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 41000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 650.0000084000001,
+        "currency": "USD",
+        "ratePerMile": 1.7150396
+      },
+      "distanceMiles": 379,
+      "estimatedDurationMinutes": 515,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12BBTj",
+        "postingId": "ZS12BBTj",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Northeast Logistics",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12B7sx",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.84278,
+        "longitude": -73.29333,
+        "city": "Commack",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-23T16:00:00Z",
+        "latest": "2025-11-24T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-24T13:00:00.000Z",
+        "latest": "2025-11-28T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 25000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 225,
+      "estimatedDurationMinutes": 330,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12B7sx",
+        "postingId": "ZS12B7sx",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Northeast Logistics",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12CD5e",
+      "origin": {
+        "latitude": 42.16,
+        "longitude": -72.47639,
+        "city": "Ludlow",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 33.57722,
+        "longitude": -96.17806,
+        "city": "Bonham",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T18:37:48Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 10000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1656,
+      "estimatedDurationMinutes": 2047,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12CD5e",
+        "postingId": "ZS12CD5e",
+        "originDeadheadMiles": 83,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Integrity Express Logistics LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12Ck66",
+      "origin": {
+        "latitude": 41.915,
+        "longitude": -71.90944,
+        "city": "Putnam",
+        "state": "CT"
+      },
+      "destination": {
+        "latitude": 40.21417,
+        "longitude": -77.00889,
+        "city": "Mechanicsburg",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-12-01T08:00:00Z",
+        "latest": "2025-12-02T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-12-02T13:00:00.000Z",
+        "latest": "2025-12-06T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 30000,
+        "lengthFeet": 48,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 800.0000248,
+        "currency": "USD",
+        "ratePerMile": 2.3121388
+      },
+      "distanceMiles": 346,
+      "estimatedDurationMinutes": 475,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12Ck66",
+        "postingId": "ZS12Ck66",
+        "originDeadheadMiles": 68,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "King Of Freight LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12CMG5",
+      "origin": {
+        "latitude": 43.605,
+        "longitude": -70.59361,
+        "city": "Hollis Ctr",
+        "state": "ME"
+      },
+      "destination": {
+        "latitude": 39.97194,
+        "longitude": -74.68333,
+        "city": "Pemberton",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-25T08:00:00Z",
+        "latest": "2025-11-26T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-26T13:00:00.000Z",
+        "latest": "2025-11-30T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 41815,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 388,
+      "estimatedDurationMinutes": 526,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12CMG5",
+        "postingId": "ZS12CMG5",
+        "originDeadheadMiles": 98,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "RXO Capacity Solutions LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12CVSh",
+      "origin": {
+        "latitude": 42.13056,
+        "longitude": -71.04167,
+        "city": "Avon",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 43.04806,
+        "longitude": -76.14778,
+        "city": "Syracuse",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 321,
+      "estimatedDurationMinutes": 445,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12CVSh",
+        "postingId": "ZS12CVSh",
+        "originDeadheadMiles": 20,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Cardinal Logistics Management Corporation",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12AR6L",
+      "origin": {
+        "latitude": 42.55833,
+        "longitude": -71.26944,
+        "city": "Billerica",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 35.04556,
+        "longitude": -85.30972,
+        "city": "Chattanooga",
+        "state": "TN"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1037,
+      "estimatedDurationMinutes": 1304,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12AR6L",
+        "postingId": "ZS12AR6L",
+        "originDeadheadMiles": 30,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Cardinal Logistics Management Corporation",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12CDgH",
+      "origin": {
+        "latitude": 42.16,
+        "longitude": -72.47639,
+        "city": "Ludlow",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 33.57722,
+        "longitude": -96.17806,
+        "city": "Bonham",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 10000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1656,
+      "estimatedDurationMinutes": 2047,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12CDgH",
+        "postingId": "ZS12CDgH",
+        "originDeadheadMiles": 83,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Integrity Express Logistics LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12A7HD",
+      "origin": {
+        "latitude": 42.05,
+        "longitude": -71.88056,
+        "city": "Webster",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 39.4283,
+        "longitude": -77.3847,
+        "city": "Frederick",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T12:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 41583,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 415,
+      "estimatedDurationMinutes": 558,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12A7HD",
+        "postingId": "ZS12A7HD",
+        "originDeadheadMiles": 59,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "First Call Logistics Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12AC4U",
+      "origin": {
+        "latitude": 42.47917,
+        "longitude": -71.15278,
+        "city": "Woburn",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 41.66472,
+        "longitude": -72.63972,
+        "city": "Rocky Hill",
+        "state": "CT"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T15:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 26000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 111,
+      "estimatedDurationMinutes": 193,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12AC4U",
+        "postingId": "ZS12AC4U",
+        "originDeadheadMiles": 11,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Roar Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS127K9q",
+      "origin": {
+        "latitude": 43.605,
+        "longitude": -70.59361,
+        "city": "Hollis Ctr",
+        "state": "ME"
+      },
+      "destination": {
+        "latitude": 39.92583,
+        "longitude": -75.12,
+        "city": "Camden",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-25T08:00:00Z",
+        "latest": "2025-11-26T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-26T13:00:00.000Z",
+        "latest": "2025-11-30T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 41815,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 397,
+      "estimatedDurationMinutes": 536,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS127K9q",
+        "postingId": "ZS127K9q",
+        "originDeadheadMiles": 98,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "RXO Capacity Solutions LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS124m9f",
+      "origin": {
+        "latitude": 42.534397,
+        "longitude": -71.61875,
+        "city": "Devens",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.63361,
+        "longitude": -74.40778,
+        "city": "Plainfield",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 232,
+      "estimatedDurationMinutes": 338,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS124m9f",
+        "postingId": "ZS124m9f",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Great Lakes Transport Solution Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12CaDV",
+      "origin": {
+        "latitude": 43.19417,
+        "longitude": -71.15139,
+        "city": "Northwood",
+        "state": "NH"
+      },
+      "destination": {
+        "latitude": 32.78333,
+        "longitude": -96.8,
+        "city": "Dallas",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 45000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 2799.999972,
+        "currency": "USD",
+        "ratePerMile": 1.540154
+      },
+      "distanceMiles": 1818,
+      "estimatedDurationMinutes": 2242,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12CaDV",
+        "postingId": "ZS12CaDV",
+        "originDeadheadMiles": 73,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "American Transport Group Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+DS3W1sHR",
+      "origin": {
+        "latitude": 41.63889,
+        "longitude": -70.97083,
+        "city": "N Dartmouth",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 41.22222,
+        "longitude": -73.05694,
+        "city": "Milford",
+        "state": "CT"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-24T08:00:00Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-28T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 0,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 137,
+      "estimatedDurationMinutes": 224,
+      "metadata": {
+        "matchId": "KL9GEejR+DS3W1sHR",
+        "postingId": "DS3W1sHR",
+        "originDeadheadMiles": 58,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Epes Logistics Services Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12Cenn",
+      "origin": {
+        "latitude": 42.88056,
+        "longitude": -71.32778,
+        "city": "Derry",
+        "state": "NH"
+      },
+      "destination": {
+        "latitude": 42.6525,
+        "longitude": -73.75667,
+        "city": "Albany",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43500,
+        "lengthFeet": 48,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 196,
+      "estimatedDurationMinutes": 295,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12Cenn",
+        "postingId": "ZS12Cenn",
+        "originDeadheadMiles": 42,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+DS3W1sfe",
+      "origin": {
+        "latitude": 42.76722,
+        "longitude": -71.81278,
+        "city": "Greenville",
+        "state": "NH"
+      },
+      "destination": {
+        "latitude": 40.35167,
+        "longitude": -76.13472,
+        "city": "Robesonia",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-25T08:00:00Z",
+        "latest": "2025-11-26T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-26T13:00:00.000Z",
+        "latest": "2025-11-30T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 39634,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 353,
+      "estimatedDurationMinutes": 484,
+      "metadata": {
+        "matchId": "KL9GEejR+DS3W1sfe",
+        "postingId": "DS3W1sfe",
+        "originDeadheadMiles": 60,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Watco Supply Chain Services Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+DS3W1dqD",
+      "origin": {
+        "latitude": 42.08333,
+        "longitude": -71.01889,
+        "city": "Brockton",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.3725,
+        "longitude": -74.51056,
+        "city": "Dayton",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-25T08:00:00Z",
+        "latest": "2025-11-26T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-26T13:00:00.000Z",
+        "latest": "2025-11-30T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 18000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 257,
+      "estimatedDurationMinutes": 368,
+      "metadata": {
+        "matchId": "KL9GEejR+DS3W1dqD",
+        "postingId": "DS3W1dqD",
+        "originDeadheadMiles": 25,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "St Freight Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+XS02ZeEY",
+      "origin": {
+        "latitude": 42.485,
+        "longitude": -71.43333,
+        "city": "Acton",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.20778,
+        "longitude": -75.07306,
+        "city": "Ivyland",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T09:00:44.815Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 89,
+        "lengthFeet": 7,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0.9999999936,
+        "currency": "USD",
+        "ratePerMile": 0.0034722222
+      },
+      "distanceMiles": 288,
+      "estimatedDurationMinutes": 406,
+      "metadata": {
+        "matchId": "KL9GEejR+XS02ZeEY",
+        "postingId": "XS02ZeEY",
+        "originDeadheadMiles": 25,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "RXO Capacity Solutions LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129DtD",
+      "origin": {
+        "latitude": 42.56111,
+        "longitude": -71.59028,
+        "city": "Ayer",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 39.9375,
+        "longitude": -77.66139,
+        "city": "Chambersburg",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T16:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43900,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 799.9999776,
+        "currency": "USD",
+        "ratePerMile": 1.8518518
+      },
+      "distanceMiles": 432,
+      "estimatedDurationMinutes": 578,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129DtD",
+        "postingId": "ZS129DtD",
+        "originDeadheadMiles": 35,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Epes Logistics Services Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12BgRm",
+      "origin": {
+        "latitude": 41.8211,
+        "longitude": -71.5061,
+        "city": "Johnston",
+        "state": "RI"
+      },
+      "destination": {
+        "latitude": 42.7925,
+        "longitude": -73.68167,
+        "city": "Waterford",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43500,
+        "lengthFeet": 48,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 172,
+      "estimatedDurationMinutes": 266,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12BgRm",
+        "postingId": "ZS12BgRm",
+        "originDeadheadMiles": 58,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS129AYD",
+      "origin": {
+        "latitude": 42.35833,
+        "longitude": -71.06028,
+        "city": "Boston",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 36.16583,
+        "longitude": -86.78444,
+        "city": "Nashville",
+        "state": "TN"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 13897,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1101,
+      "estimatedDurationMinutes": 1381,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS129AYD",
+        "postingId": "ZS129AYD",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS1282Lu",
+      "origin": {
+        "latitude": 42.39167,
+        "longitude": -71.56667,
+        "city": "Hudson",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 41.15056,
+        "longitude": -73.94583,
+        "city": "Congers",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 187,
+      "estimatedDurationMinutes": 284,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS1282Lu",
+        "postingId": "ZS1282Lu",
+        "originDeadheadMiles": 34,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS11tWnm",
+      "origin": {
+        "latitude": 42.10139,
+        "longitude": -72.59028,
+        "city": "Springfield",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.167,
+        "longitude": -74.833,
+        "city": "Fairless Hills",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T16:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 212,
+      "estimatedDurationMinutes": 314,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS11tWnm",
+        "postingId": "ZS11tWnm",
+        "originDeadheadMiles": 91,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Bronco Transportation Services LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS11tBDU",
+      "origin": {
+        "latitude": 42.2625,
+        "longitude": -71.80278,
+        "city": "Worcester",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.167,
+        "longitude": -74.833,
+        "city": "Fairless Hills",
+        "state": "PA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-25T16:00:00Z",
+        "latest": "2025-11-26T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-26T13:00:00.000Z",
+        "latest": "2025-11-30T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 246,
+      "estimatedDurationMinutes": 355,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS11tBDU",
+        "postingId": "ZS11tBDU",
+        "originDeadheadMiles": 43,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Bronco Transportation Services LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS125pNg",
+      "origin": {
+        "latitude": 42.35833,
+        "longitude": -71.06028,
+        "city": "Boston",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.72806,
+        "longitude": -74.07806,
+        "city": "Jersey City",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-29T16:00:00Z",
+        "latest": "2025-11-30T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-30T13:00:00.000Z",
+        "latest": "2025-12-04T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 20000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 224,
+      "estimatedDurationMinutes": 329,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS125pNg",
+        "postingId": "ZS125pNg",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Landstar Ranger Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+XS02Zk4E",
+      "origin": {
+        "latitude": 41.82389,
+        "longitude": -71.41333,
+        "city": "Providence",
+        "state": "RI"
+      },
+      "destination": {
+        "latitude": 40.7,
+        "longitude": -74,
+        "city": "New York",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T19:19:43.243Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 45000,
+        "lengthFeet": 25,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 184,
+      "estimatedDurationMinutes": 281,
+      "metadata": {
+        "matchId": "KL9GEejR+XS02Zk4E",
+        "postingId": "XS02Zk4E",
+        "originDeadheadMiles": 50,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": false,
+        "posterCompanyName": "DAT TEST DISCOVERY 12",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+XS02ZkBM",
+      "origin": {
+        "latitude": 42.99556,
+        "longitude": -71.45528,
+        "city": "Manchester",
+        "state": "NH"
+      },
+      "destination": {
+        "latitude": 40.7,
+        "longitude": -74,
+        "city": "New York",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T19:19:42.115Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 45000,
+        "lengthFeet": 25,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 254,
+      "estimatedDurationMinutes": 365,
+      "metadata": {
+        "matchId": "KL9GEejR+XS02ZkBM",
+        "postingId": "XS02ZkBM",
+        "originDeadheadMiles": 53,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": false,
+        "posterCompanyName": "DAT TEST DISCOVERY 12",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+XS02ZjqE",
+      "origin": {
+        "latitude": 42.35833,
+        "longitude": -71.06028,
+        "city": "Boston",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 40.7,
+        "longitude": -74,
+        "city": "New York",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T19:19:41.172Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 45000,
+        "lengthFeet": 25,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 221,
+      "estimatedDurationMinutes": 325,
+      "metadata": {
+        "matchId": "KL9GEejR+XS02ZjqE",
+        "postingId": "XS02ZjqE",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": false,
+        "posterCompanyName": "DAT TEST DISCOVERY 12",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12CWy1",
+      "origin": {
+        "latitude": 41.3775,
+        "longitude": -71.82778,
+        "city": "Westerly",
+        "state": "RI"
+      },
+      "destination": {
+        "latitude": 40.69139,
+        "longitude": -73.80611,
+        "city": "Jamaica",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T19:17:03.445Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 30000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 137,
+      "estimatedDurationMinutes": 224,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12CWy1",
+        "postingId": "ZS12CWy1",
+        "originDeadheadMiles": 99,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Yellow Diamond Consultants LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GEejR+ZS12CX4h",
+      "origin": {
+        "latitude": 42.10139,
+        "longitude": -72.59028,
+        "city": "Springfield",
+        "state": "MA"
+      },
+      "destination": {
+        "latitude": 27.50611,
+        "longitude": -99.50722,
+        "city": "Laredo",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T15:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 2300.0001504,
+        "currency": "USD",
+        "ratePerMile": 1.0838832
+      },
+      "distanceMiles": 2122,
+      "estimatedDurationMinutes": 2606,
+      "metadata": {
+        "matchId": "KL9GEejR+ZS12CX4h",
+        "postingId": "ZS12CX4h",
+        "originDeadheadMiles": 91,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Landstar Ranger Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12CpWH",
+      "origin": {
+        "latitude": 36.82667,
+        "longitude": -83.45361,
+        "city": "Coldiron",
+        "state": "KY"
+      },
+      "destination": {
+        "latitude": 26.20306,
+        "longitude": -98.22972,
+        "city": "McAllen",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42200,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1368,
+      "estimatedDurationMinutes": 1702,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12CpWH",
+        "postingId": "ZS12CpWH",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12CpZq",
+      "origin": {
+        "latitude": 40.53667,
+        "longitude": -75.63167,
+        "city": "Breinigsville",
+        "state": "PA"
+      },
+      "destination": {
+        "latitude": 42.97833,
+        "longitude": -77.98444,
+        "city": "Le Roy",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-23T22:00:06Z",
+        "latest": "2025-11-24T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-24T13:00:00.000Z",
+        "latest": "2025-11-28T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42761,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 600.0000216000001,
+        "currency": "USD",
+        "ratePerMile": 2.0270271
+      },
+      "distanceMiles": 296,
+      "estimatedDurationMinutes": 415,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12CpZq",
+        "postingId": "ZS12CpZq",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Direct Traffic Solutions/Direct Transport Group",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12CEJn",
+      "origin": {
+        "latitude": 38.30306,
+        "longitude": -77.46083,
+        "city": "Fredericksburg",
+        "state": "VA"
+      },
+      "destination": {
+        "latitude": 39.4283,
+        "longitude": -77.3847,
+        "city": "Frederick",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 15000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 96,
+      "estimatedDurationMinutes": 175,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12CEJn",
+        "postingId": "ZS12CEJn",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Range Logistics Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS129wpG",
+      "origin": {
+        "latitude": 30.08583,
+        "longitude": -94.10167,
+        "city": "Beaumont",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 39.75275,
+        "longitude": -75.32055,
+        "city": "Logan Twp",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1414,
+      "estimatedDurationMinutes": 1757,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS129wpG",
+        "postingId": "ZS129wpG",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Backhaul Direct",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12C10E",
+      "origin": {
+        "latitude": 35.92722,
+        "longitude": -89.91889,
+        "city": "Blytheville",
+        "state": "AR"
+      },
+      "destination": {
+        "latitude": 36.41222,
+        "longitude": -79.96722,
+        "city": "Mayodan",
+        "state": "NC"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T18:19:09.78Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 2099.999944,
+        "currency": "USD",
+        "ratePerMile": 3.034682
+      },
+      "distanceMiles": 692,
+      "estimatedDurationMinutes": 890,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12C10E",
+        "postingId": "ZS12C10E",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Wildcat Logistics LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS129wtE",
+      "origin": {
+        "latitude": 30.08583,
+        "longitude": -94.10167,
+        "city": "Beaumont",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 35.14944,
+        "longitude": -90.04889,
+        "city": "Memphis",
+        "state": "TN"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-26T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-30T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1200.0000143999998,
+        "currency": "USD",
+        "ratePerMile": 2.1276596
+      },
+      "distanceMiles": 564,
+      "estimatedDurationMinutes": 737,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS129wtE",
+        "postingId": "ZS129wtE",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Translogistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS1275NZ",
+      "origin": {
+        "latitude": 36.08389,
+        "longitude": -87.79472,
+        "city": "Waverly",
+        "state": "TN"
+      },
+      "destination": {
+        "latitude": 35.54556,
+        "longitude": -80.61111,
+        "city": "Landis",
+        "state": "NC"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T16:00:00Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1099.9999811,
+        "currency": "USD",
+        "ratePerMile": 2.2964509
+      },
+      "distanceMiles": 479,
+      "estimatedDurationMinutes": 635,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS1275NZ",
+        "postingId": "ZS1275NZ",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Confiance Logistics Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS128dzV",
+      "origin": {
+        "latitude": 29.76306,
+        "longitude": -95.36306,
+        "city": "Houston",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 30.36722,
+        "longitude": -89.09278,
+        "city": "Gulfport",
+        "state": "MS"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1400.000024,
+        "currency": "USD",
+        "ratePerMile": 3.517588
+      },
+      "distanceMiles": 398,
+      "estimatedDurationMinutes": 538,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS128dzV",
+        "postingId": "ZS128dzV",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Confiance Logistics Llc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS126UeN",
+      "origin": {
+        "latitude": 32.64917,
+        "longitude": -96.71278,
+        "city": "Hutchins",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 33.12806,
+        "longitude": -91.96111,
+        "city": "Crossett",
+        "state": "AR"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 9600,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 700,
+        "currency": "USD",
+        "ratePerMile": 2.1875
+      },
+      "distanceMiles": 320,
+      "estimatedDurationMinutes": 444,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS126UeN",
+        "postingId": "ZS126UeN",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Armstrong Transport Group Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS129H7K",
+      "origin": {
+        "latitude": 37.77417,
+        "longitude": -87.11333,
+        "city": "Owensboro",
+        "state": "KY"
+      },
+      "destination": {
+        "latitude": 27.50611,
+        "longitude": -99.50722,
+        "city": "Laredo",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 16500,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1700.0000663,
+        "currency": "USD",
+        "ratePerMile": 1.4249791
+      },
+      "distanceMiles": 1193,
+      "estimatedDurationMinutes": 1492,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS129H7K",
+        "postingId": "ZS129H7K",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Armstrong Transport Group Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12Cb2q",
+      "origin": {
+        "latitude": 34.50361,
+        "longitude": -93.055,
+        "city": "Hot Spgs",
+        "state": "AR"
+      },
+      "destination": {
+        "latitude": 29.42389,
+        "longitude": -98.49333,
+        "city": "San Antonio",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 45000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 799.9999749000001,
+        "currency": "USD",
+        "ratePerMile": 1.4109347
+      },
+      "distanceMiles": 567,
+      "estimatedDurationMinutes": 740,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12Cb2q",
+        "postingId": "ZS12Cb2q",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "ITF Logistics Group LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12BhXt",
+      "origin": {
+        "latitude": 36.98889,
+        "longitude": -84.6,
+        "city": "Burnside",
+        "state": "KY"
+      },
+      "destination": {
+        "latitude": 35.0875,
+        "longitude": -84.03472,
+        "city": "Murphy",
+        "state": "NC"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T16:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43655,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 220,
+      "estimatedDurationMinutes": 324,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12BhXt",
+        "postingId": "ZS12BhXt",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": false,
+        "posterCompanyName": "Bridge Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12AJJG",
+      "origin": {
+        "latitude": 34.27389,
+        "longitude": -92.09083,
+        "city": "White Hall",
+        "state": "AR"
+      },
+      "destination": {
+        "latitude": 35.48861,
+        "longitude": -82.98889,
+        "city": "Waynesville",
+        "state": "NC"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-23T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-27T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 45000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1400.0000168,
+        "currency": "USD",
+        "ratePerMile": 2.1276596
+      },
+      "distanceMiles": 658,
+      "estimatedDurationMinutes": 850,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12AJJG",
+        "postingId": "ZS12AJJG",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Landstar Ranger Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12BM7a",
+      "origin": {
+        "latitude": 38.39889,
+        "longitude": -82.57833,
+        "city": "Kenova",
+        "state": "WV"
+      },
+      "destination": {
+        "latitude": 40.95028,
+        "longitude": -73.82778,
+        "city": "Tuckahoe",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 18000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 497,
+      "estimatedDurationMinutes": 656,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12BM7a",
+        "postingId": "ZS12BM7a",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Landstar Ranger Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS127xDL",
+      "origin": {
+        "latitude": 37.98833,
+        "longitude": -85.71583,
+        "city": "Shepherdsville",
+        "state": "KY"
+      },
+      "destination": {
+        "latitude": 35.77194,
+        "longitude": -78.63889,
+        "city": "Raleigh",
+        "state": "NC"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T12:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43142,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 575,
+      "estimatedDurationMinutes": 750,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS127xDL",
+        "postingId": "ZS127xDL",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Megacorp Logistics",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12CH4p",
+      "origin": {
+        "latitude": 27.80028,
+        "longitude": -97.39611,
+        "city": "Corpus Christi",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 32.78333,
+        "longitude": -96.8,
+        "city": "Dallas",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-25T16:00:00Z",
+        "latest": "2025-11-26T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-26T13:00:00.000Z",
+        "latest": "2025-11-30T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 15000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 413,
+      "estimatedDurationMinutes": 556,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12CH4p",
+        "postingId": "ZS12CH4p",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Travero Logistics LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12AJ4s",
+      "origin": {
+        "latitude": 36.8225,
+        "longitude": -88.6475,
+        "city": "Hickory",
+        "state": "KY"
+      },
+      "destination": {
+        "latitude": 39.50944,
+        "longitude": -76.16444,
+        "city": "Aberdeen",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 25000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 2100.0000946,
+        "currency": "USD",
+        "ratePerMile": 2.5059667
+      },
+      "distanceMiles": 838,
+      "estimatedDurationMinutes": 1066,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12AJ4s",
+        "postingId": "ZS12AJ4s",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Globaltranz/Lps",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS129u7p",
+      "origin": {
+        "latitude": 31.75861,
+        "longitude": -106.48639,
+        "city": "El Paso",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 32.78333,
+        "longitude": -96.8,
+        "city": "Dallas",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T16:00:00Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1200.000036,
+        "currency": "USD",
+        "ratePerMile": 1.866252
+      },
+      "distanceMiles": 643,
+      "estimatedDurationMinutes": 832,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS129u7p",
+        "postingId": "ZS129u7p",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Echo Global Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS129f9n",
+      "origin": {
+        "latitude": 43.30944,
+        "longitude": -73.64444,
+        "city": "Glens Falls",
+        "state": "NY"
+      },
+      "destination": {
+        "latitude": 26.1,
+        "longitude": -98.26278,
+        "city": "Hidalgo",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T16:00:00Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 2155,
+      "estimatedDurationMinutes": 2646,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS129f9n",
+        "postingId": "ZS129f9n",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Dallas & Mavis/Greatwide",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12Bgx8",
+      "origin": {
+        "latitude": 40.5903,
+        "longitude": -74.6308,
+        "city": "Bridgewater",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 39.37194,
+        "longitude": -77.27222,
+        "city": "Monrovia",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 40320,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 204,
+      "estimatedDurationMinutes": 305,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12Bgx8",
+        "postingId": "ZS12Bgx8",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12AT6a",
+      "origin": {
+        "latitude": 32.64917,
+        "longitude": -96.71278,
+        "city": "Hutchins",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 29.78583,
+        "longitude": -95.95083,
+        "city": "Brookshire",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-25T08:00:00Z",
+        "latest": "2025-11-26T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-26T13:00:00.000Z",
+        "latest": "2025-11-30T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 16750,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 222,
+      "estimatedDurationMinutes": 326,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12AT6a",
+        "postingId": "ZS12AT6a",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12ARLZ",
+      "origin": {
+        "latitude": 32.78333,
+        "longitude": -96.8,
+        "city": "Dallas",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 29.78583,
+        "longitude": -95.95083,
+        "city": "Brookshire",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-25T08:00:00Z",
+        "latest": "2025-11-26T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-26T13:00:00.000Z",
+        "latest": "2025-11-30T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 39794,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 499.999984,
+        "currency": "USD",
+        "ratePerMile": 1.858736
+      },
+      "distanceMiles": 269,
+      "estimatedDurationMinutes": 383,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12ARLZ",
+        "postingId": "ZS12ARLZ",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A61P",
+      "origin": {
+        "latitude": 40.72556,
+        "longitude": -75.39444,
+        "city": "Bath",
+        "state": "PA"
+      },
+      "destination": {
+        "latitude": 39.37194,
+        "longitude": -77.27222,
+        "city": "Monrovia",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 15390,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 175,
+      "estimatedDurationMinutes": 270,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A61P",
+        "postingId": "ZS12A61P",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A5y0",
+      "origin": {
+        "latitude": 36.72806,
+        "longitude": -76.58389,
+        "city": "Suffolk",
+        "state": "VA"
+      },
+      "destination": {
+        "latitude": 39.37194,
+        "longitude": -77.27222,
+        "city": "Monrovia",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 26874,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 799.9999909000001,
+        "currency": "USD",
+        "ratePerMile": 3.1620553
+      },
+      "distanceMiles": 253,
+      "estimatedDurationMinutes": 364,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A5y0",
+        "postingId": "ZS12A5y0",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A5r7",
+      "origin": {
+        "latitude": 40.3725,
+        "longitude": -74.51056,
+        "city": "Dayton",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 39.37194,
+        "longitude": -77.27222,
+        "city": "Monrovia",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 41270,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 192,
+      "estimatedDurationMinutes": 290,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A5r7",
+        "postingId": "ZS12A5r7",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A4dv",
+      "origin": {
+        "latitude": 40.51861,
+        "longitude": -74.4125,
+        "city": "Edison",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 39.37194,
+        "longitude": -77.27222,
+        "city": "Monrovia",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 40100,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 201,
+      "estimatedDurationMinutes": 301,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A4dv",
+        "postingId": "ZS12A4dv",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A4aN",
+      "origin": {
+        "latitude": 40.3725,
+        "longitude": -74.51056,
+        "city": "Dayton",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 39.37194,
+        "longitude": -77.27222,
+        "city": "Monrovia",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 41347,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 192,
+      "estimatedDurationMinutes": 290,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A4aN",
+        "postingId": "ZS12A4aN",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A4aM",
+      "origin": {
+        "latitude": 40.3525,
+        "longitude": -74.44056,
+        "city": "Jamesburg",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 39.37194,
+        "longitude": -77.27222,
+        "city": "Monrovia",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 8000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 191,
+      "estimatedDurationMinutes": 289,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A4aM",
+        "postingId": "ZS12A4aM",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS122PzL",
+      "origin": {
+        "latitude": 32.9125,
+        "longitude": -96.63861,
+        "city": "Garland",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 29.78583,
+        "longitude": -95.95083,
+        "city": "Brookshire",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 43362,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 499.9999872,
+        "currency": "USD",
+        "ratePerMile": 1.7730496
+      },
+      "distanceMiles": 282,
+      "estimatedDurationMinutes": 398,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS122PzL",
+        "postingId": "ZS122PzL",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12BfME",
+      "origin": {
+        "latitude": 40.5903,
+        "longitude": -74.6308,
+        "city": "Bridgewater",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 39.37194,
+        "longitude": -77.27222,
+        "city": "Monrovia",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 40320,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 204,
+      "estimatedDurationMinutes": 305,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12BfME",
+        "postingId": "ZS12BfME",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A5mW",
+      "origin": {
+        "latitude": 40.51861,
+        "longitude": -74.4125,
+        "city": "Edison",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 39.37194,
+        "longitude": -77.27222,
+        "city": "Monrovia",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 40100,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 201,
+      "estimatedDurationMinutes": 301,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A5mW",
+        "postingId": "ZS12A5mW",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A528",
+      "origin": {
+        "latitude": 40.35,
+        "longitude": -74.44,
+        "city": "Monroe Twp",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 39.37194,
+        "longitude": -77.27222,
+        "city": "Monrovia",
+        "state": "MD"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 21300,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 191,
+      "estimatedDurationMinutes": 289,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A528",
+        "postingId": "ZS12A528",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A1YB",
+      "origin": {
+        "latitude": 40.51861,
+        "longitude": -74.4125,
+        "city": "Edison",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 37.29333,
+        "longitude": -80.055,
+        "city": "Salem",
+        "state": "VA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 439,
+      "estimatedDurationMinutes": 587,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A1YB",
+        "postingId": "ZS12A1YB",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A0Hs",
+      "origin": {
+        "latitude": 40.26,
+        "longitude": -74.27417,
+        "city": "Freehold",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 35.11667,
+        "longitude": -80.72389,
+        "city": "Matthews",
+        "state": "NC"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 609,
+      "estimatedDurationMinutes": 791,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A0Hs",
+        "postingId": "ZS12A0Hs",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS128z0c",
+      "origin": {
+        "latitude": 37.32806,
+        "longitude": -87.49889,
+        "city": "Madisonville",
+        "state": "KY"
+      },
+      "destination": {
+        "latitude": 40.06976,
+        "longitude": -74.84184,
+        "city": "Burlington",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 10291,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 2200.00009,
+        "currency": "USD",
+        "ratePerMile": 2.5882354
+      },
+      "distanceMiles": 850,
+      "estimatedDurationMinutes": 1080,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS128z0c",
+        "postingId": "ZS128z0c",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12BzB9",
+      "origin": {
+        "latitude": 35.04556,
+        "longitude": -85.30972,
+        "city": "Chattanooga",
+        "state": "TN"
+      },
+      "destination": {
+        "latitude": 32.73556,
+        "longitude": -97.10778,
+        "city": "Arlington",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-22T08:00:00Z",
+        "latest": "2025-11-23T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-23T13:00:00.000Z",
+        "latest": "2025-11-27T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42656,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 808,
+      "estimatedDurationMinutes": 1030,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12BzB9",
+        "postingId": "ZS12BzB9",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12ByJT",
+      "origin": {
+        "latitude": 37.55361,
+        "longitude": -77.46056,
+        "city": "Richmond",
+        "state": "VA"
+      },
+      "destination": {
+        "latitude": 35.84556,
+        "longitude": -86.39028,
+        "city": "Murfreesboro",
+        "state": "TN"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42000,
+        "lengthFeet": 48,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 606,
+      "estimatedDurationMinutes": 787,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12ByJT",
+        "postingId": "ZS12ByJT",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12ByJP",
+      "origin": {
+        "latitude": 37.55361,
+        "longitude": -77.46056,
+        "city": "Richmond",
+        "state": "VA"
+      },
+      "destination": {
+        "latitude": 27.50611,
+        "longitude": -99.50722,
+        "city": "Laredo",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-20T18:13:04.544Z",
+        "latest": "2025-11-21T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-21T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44992,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1680,
+      "estimatedDurationMinutes": 2076,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12ByJP",
+        "postingId": "ZS12ByJP",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Allen Lund Company",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12ABcT",
+      "origin": {
+        "latitude": 39.80056,
+        "longitude": -76.98333,
+        "city": "Hanover",
+        "state": "PA"
+      },
+      "destination": {
+        "latitude": 27.50611,
+        "longitude": -99.50722,
+        "city": "Laredo",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 40000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1900.0001399999999,
+        "currency": "USD",
+        "ratePerMile": 1.0650225
+      },
+      "distanceMiles": 1784,
+      "estimatedDurationMinutes": 2201,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12ABcT",
+        "postingId": "ZS12ABcT",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Koola Logistics LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12A7fW",
+      "origin": {
+        "latitude": 43.15472,
+        "longitude": -77.61583,
+        "city": "Rochester",
+        "state": "NY"
+      },
+      "destination": {
+        "latitude": 36.50028,
+        "longitude": -80.62667,
+        "city": "Toast",
+        "state": "NC"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42500,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 641,
+      "estimatedDurationMinutes": 829,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12A7fW",
+        "postingId": "ZS12A7fW",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Triple T Transport Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS124Wr7",
+      "origin": {
+        "latitude": 42.70194,
+        "longitude": -73.96667,
+        "city": "Guidlrlnd Ctr",
+        "state": "NY"
+      },
+      "destination": {
+        "latitude": 43.30944,
+        "longitude": -73.64444,
+        "city": "Glens Falls",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 55,
+      "estimatedDurationMinutes": 126,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS124Wr7",
+        "postingId": "ZS124Wr7",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "SUNTECK TRANSPORT CO LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+DS3W1t1x",
+      "origin": {
+        "latitude": 37.69389,
+        "longitude": -85.85917,
+        "city": "Elizabethtown",
+        "state": "KY"
+      },
+      "destination": {
+        "latitude": 37.244167,
+        "longitude": -77.41028,
+        "city": "Colonial Hts",
+        "state": "VA"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T08:00:00Z",
+        "latest": "2025-11-21T08:00:00Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-25T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 42309,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1500.0000072,
+        "currency": "USD",
+        "ratePerMile": 2.5773196
+      },
+      "distanceMiles": 582,
+      "estimatedDurationMinutes": 758,
+      "metadata": {
+        "matchId": "KL9GE5se+DS3W1t1x",
+        "postingId": "DS3W1t1x",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Ryan Transportation Service Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+DS3W1Msr",
+      "origin": {
+        "latitude": 43.78667,
+        "longitude": -75.49222,
+        "city": "Lowville",
+        "state": "NY"
+      },
+      "destination": {
+        "latitude": 32.78333,
+        "longitude": -96.8,
+        "city": "Dallas",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44500,
+        "lengthFeet": 0,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1600,
+      "estimatedDurationMinutes": 1980,
+      "metadata": {
+        "matchId": "KL9GE5se+DS3W1Msr",
+        "postingId": "DS3W1Msr",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Warren Transport/Warren Specialized Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+DS3W1Msq",
+      "origin": {
+        "latitude": 43.78667,
+        "longitude": -75.49222,
+        "city": "Lowville",
+        "state": "NY"
+      },
+      "destination": {
+        "latitude": 32.78333,
+        "longitude": -96.8,
+        "city": "Dallas",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-24T08:00:00Z",
+        "latest": "2025-11-25T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-25T13:00:00.000Z",
+        "latest": "2025-11-29T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 44500,
+        "lengthFeet": 0,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1600,
+      "estimatedDurationMinutes": 1980,
+      "metadata": {
+        "matchId": "KL9GE5se+DS3W1Msq",
+        "postingId": "DS3W1Msq",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Warren Transport/Warren Specialized Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+DS3W1XZR",
+      "origin": {
+        "latitude": 29.42389,
+        "longitude": -98.49333,
+        "city": "San Antonio",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 27.50611,
+        "longitude": -99.50722,
+        "city": "Laredo",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-28T08:00:00Z",
+        "latest": "2025-11-29T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-29T13:00:00.000Z",
+        "latest": "2025-12-03T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 34611,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 159,
+      "estimatedDurationMinutes": 251,
+      "metadata": {
+        "matchId": "KL9GE5se+DS3W1XZR",
+        "postingId": "DS3W1XZR",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Sureway Transportation Co/ATS",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12CM0Z",
+      "origin": {
+        "latitude": 39.95222,
+        "longitude": -75.16417,
+        "city": "Philadelphia",
+        "state": "PA"
+      },
+      "destination": {
+        "latitude": 42.88639,
+        "longitude": -78.87861,
+        "city": "Buffalo",
+        "state": "NY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 20000,
+        "lengthFeet": 48,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 1000.000001,
+        "currency": "USD",
+        "ratePerMile": 2.5974026
+      },
+      "distanceMiles": 385,
+      "estimatedDurationMinutes": 522,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12CM0Z",
+        "postingId": "ZS12CM0Z",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "Total Quality Logistics INC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12ACyN",
+      "origin": {
+        "latitude": 30.31167,
+        "longitude": -95.45583,
+        "city": "Conroe",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 32.95361,
+        "longitude": -96.89,
+        "city": "Carrollton",
+        "state": "TX"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 5876,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 217,
+      "estimatedDurationMinutes": 320,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12ACyN",
+        "postingId": "ZS12ACyN",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "RXO Capacity Solutions LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS129BXt",
+      "origin": {
+        "latitude": 37.77417,
+        "longitude": -87.11333,
+        "city": "Owensboro",
+        "state": "KY"
+      },
+      "destination": {
+        "latitude": 38.04917,
+        "longitude": -84.50028,
+        "city": "Lexington",
+        "state": "KY"
+      },
+      "pickupWindow": {
+        "earliest": "2025-11-21T16:00:00Z",
+        "latest": "2025-11-22T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-11-22T13:00:00.000Z",
+        "latest": "2025-11-26T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 11648,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 178,
+      "estimatedDurationMinutes": 274,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS129BXt",
+        "postingId": "ZS129BXt",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "England Logistics Inc",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12CGyr",
+      "origin": {
+        "latitude": 29.76306,
+        "longitude": -95.36306,
+        "city": "Houston",
+        "state": "TX"
+      },
+      "destination": {
+        "latitude": 40.62194,
+        "longitude": -74.245,
+        "city": "Linden",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-12-02T08:00:00Z",
+        "latest": "2025-12-03T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-12-03T13:00:00.000Z",
+        "latest": "2025-12-07T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 45000,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 1618,
+      "estimatedDurationMinutes": 2002,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12CGyr",
+        "postingId": "ZS12CGyr",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "RXO Capacity Solutions LLC",
+        "relevanceScore": 1
+      }
+    },
+    {
+      "id": "KL9GE5se+ZS12CGvE",
+      "origin": {
+        "latitude": 39.42722,
+        "longitude": -75.23444,
+        "city": "Bridgeton",
+        "state": "NJ"
+      },
+      "destination": {
+        "latitude": 40.06976,
+        "longitude": -74.84184,
+        "city": "Burlington",
+        "state": "NJ"
+      },
+      "pickupWindow": {
+        "earliest": "2025-12-01T08:00:00Z",
+        "latest": "2025-12-02T07:59:59.999Z"
+      },
+      "deliveryWindow": {
+        "earliest": "2025-12-02T13:00:00.000Z",
+        "latest": "2025-12-06T01:00:00.000Z"
+      },
+      "requirements": {
+        "weightPounds": 27036,
+        "lengthFeet": 53,
+        "equipmentTypes": [
+          "V"
+        ]
+      },
+      "revenue": {
+        "amount": 0,
+        "currency": "USD",
+        "ratePerMile": 0
+      },
+      "distanceMiles": 69,
+      "estimatedDurationMinutes": 143,
+      "metadata": {
+        "matchId": "KL9GE5se+ZS12CGvE",
+        "postingId": "ZS12CGvE",
+        "originDeadheadMiles": 0,
+        "isBookable": false,
+        "isQuickPayable": false,
+        "isFactorable": true,
+        "posterCompanyName": "RXO Capacity Solutions LLC",
+        "relevanceScore": 1
+      }
+    }
+  ]
+}
