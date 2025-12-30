@@ -1,37 +1,60 @@
-# Virtual Environment
-venv/
-env/
-.venv/
-
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
 
 # Environment variables
 .env
 .env.local
+.env.*.local
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
-# Output files
-*.json
-!requirements.txt
-!package.json
-all_routes_response.json
-solution_output.json
-solution_output.txt
-all_possible_routes.json
-all_possible_routes.txt
-extracted_data.json
+# Logs
+*.log
+api_logs/
+logs/
 
 # OS
 .DS_Store
 Thumbs.db
 
+# Test files
+test_*.py
+*_test.py
+
+# Temporary files
+*.tmp
+*.bak
+*.json.bak
+
+# Vercel
+.vercel

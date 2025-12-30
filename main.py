@@ -1,12 +1,25 @@
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any, Tuple
-from ortools.constraint_solver import routing_enums_pb2
-from ortools.constraint_solver import pywrapcp
 import math
 import os
+import logging
 from datetime import datetime, timedelta
 from collections import defaultdict
+
+# Try to import ortools, but make it optional
+try:
+    from ortools.constraint_solver import routing_enums_pb2
+    from ortools.constraint_solver import pywrapcp
+    ORTOOLS_AVAILABLE = True
+except ImportError:
+    ORTOOLS_AVAILABLE = False
+    logger.warning("ortools not installed. The /solve_routes endpoint will not be available.")
+    logger.info("Install ortools with: pip install ortools")
+    # Create dummy classes to prevent import errors
+    routing_enums_pb2 = None
+    pywrapcp = None
 
 # Load environment variables from .env file
 try:
@@ -15,15 +28,59 @@ try:
 except ImportError:
     pass  # python-dotenv not installed, will use environment variables only
 
+# Configure logging
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_FORMAT = os.getenv("LOG_FORMAT", "text")  # 'json' or 'text'
+LOG_TO_FILE = os.getenv("LOG_TO_FILE", "false").lower() == "true"
+LOG_FILE_PATH = os.getenv("LOG_FILE_PATH", "api.log")
+LOG_API_REQUESTS = os.getenv("LOG_API_REQUESTS", "true").lower() == "true"
+
+# Set up logging
+logging.basicConfig(
+    level=getattr(logging, LOG_LEVEL, logging.INFO),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s' if LOG_FORMAT == "text" else None,
+    handlers=[
+        logging.StreamHandler(),
+        *([logging.FileHandler(LOG_FILE_PATH)] if LOG_TO_FILE else [])
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 # Gemini AI imports
 try:
     import google.generativeai as genai
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
-    print("Warning: google-generativeai not installed. Gemini features will be disabled.")
+    logger.warning("google-generativeai not installed. Gemini features will be disabled.")
 
 app = FastAPI(title="VRPTW Solver", description="Vehicle Routing Problem with Time Windows Solver")
+
+# Add request/response logging middleware
+@app.middleware("http")
+async def log_requests(request, call_next):
+    if LOG_API_REQUESTS:
+        start_time = datetime.now()
+        logger.info(f"Request: {request.method} {request.url.path} - Client: {request.client.host if request.client else 'unknown'}")
+    
+    response = await call_next(request)
+    
+    if LOG_API_REQUESTS:
+        process_time = (datetime.now() - start_time).total_seconds()
+        logger.info(f"Response: {request.method} {request.url.path} - Status: {response.status_code} - Time: {process_time:.3f}s")
+    
+    return response
+
+# Add CORS middleware - configure origins based on environment
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ORIGINS if "*" not in CORS_ORIGINS else ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize Gemini API if available
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -33,9 +90,9 @@ if GEMINI_AVAILABLE and GEMINI_API_KEY:
 else:
     GEMINI_ENABLED = False
     if not GEMINI_AVAILABLE:
-        print("Note: Install google-generativeai to enable Gemini features: pip install google-generativeai")
+        logger.info("Install google-generativeai to enable Gemini features: pip install google-generativeai")
     elif not GEMINI_API_KEY:
-        print("Note: Set GEMINI_API_KEY environment variable to enable Gemini features")
+        logger.info("Set GEMINI_API_KEY environment variable to enable Gemini features")
 
 
 # Pydantic Model for Input Load Data
@@ -168,8 +225,8 @@ def solve_vrptw(load_input: LoadInput, custom_strategy=None, timeout_seconds=Non
     
     # Warn about very large problems
     if num_nodes > 100:
-        print(f"WARNING: Large problem detected ({num_nodes} nodes). Solver may take longer or fail.")
-        print("Consider breaking the problem into smaller sub-problems if solver fails.")
+        logger.warning(f"Large problem detected ({num_nodes} nodes). Solver may take longer or fail.")
+        logger.info("Consider breaking the problem into smaller sub-problems if solver fails.")
     
     # Validate time windows
     for i, tw in enumerate(data['time_windows']):
@@ -331,7 +388,7 @@ def solve_vrptw(load_input: LoadInput, custom_strategy=None, timeout_seconds=Non
     except Exception as e:
         # Log more details about the error
         error_msg = f"OR-Tools solver error: {str(e)}"
-        print(f"DEBUG: {error_msg}")
+        logger.debug(f"{error_msg}")
         raise Exception(error_msg)
     
     return solution, routing, manager, time_dimension, data
@@ -395,6 +452,11 @@ async def solve_routes(load_input: LoadInput):
     This endpoint accepts routing problem parameters and returns optimal routes
     that satisfy all constraints including time windows, capacity, and pickup/delivery precedence.
     """
+    if not ORTOOLS_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="OR-Tools is not installed. This endpoint requires ortools. Install it with: pip install ortools"
+        )
     try:
         # Validate input
         num_nodes = len(load_input.time_matrix)
@@ -508,7 +570,7 @@ async def solve_routes(load_input: LoadInput):
                 )
             except Exception as e:
                 # If multiple solutions fail, return single solution
-                print(f"Warning: Could not find multiple solutions: {e}")
+                logger.warning(f"Could not find multiple solutions: {e}")
                 return SolutionResponse(
                     routes=[Route(**route) for route in routes],
                     route_options=[],
@@ -627,11 +689,12 @@ class TripPlanDetail(BaseModel):
 
 
 class AllRoutesResponse(BaseModel):
-    total_routes: int
-    routes: List[RouteOption]
+    total_routes: int  # Total routes found (before pagination)
+    routes: List[RouteOption]  # Routes for current page
     search_criteria: Dict[str, Any]
     message: Optional[str] = None
     trip_plans: Optional[List[TripPlanDetail]] = None
+    pagination: Optional[Dict[str, Any]] = None  # Pagination info
 
 
 def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
@@ -799,12 +862,31 @@ Format your response as a structured trip plan that a truck driver can follow. B
         )
     
     except Exception as e:
-        print(f"Error generating trip plan with Gemini: {e}")
+        logger.error(f"Error generating trip plan with Gemini: {e}")
         return None
 
 
-def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: int = 5) -> List[Dict]:
-    """Find all possible route chains from the request data."""
+def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: int = 5, 
+                                 initial_max_deadhead: float = None, 
+                                 auto_increase_deadhead: bool = True,
+                                 max_iterations: int = 10,
+                                 max_routes: int = 500,
+                                 min_revenue: float = 0,
+                                 max_deadhead_ratio: float = 0.5,
+                                 min_required_routes: int = 10) -> Tuple[List[Dict], float]:
+    """
+    Find all possible route chains from the request data.
+    
+    Args:
+        request: The route request with searchCriteria and loads
+        max_chain_length: Maximum number of loads in a chain
+        initial_max_deadhead: Initial max deadhead (if None, uses request options)
+        auto_increase_deadhead: If True, automatically increase deadhead if no routes found
+        max_iterations: Maximum iterations to try increasing deadhead
+    
+    Returns:
+        Tuple of (routes_list, actual_deadhead_used)
+    """
     search_criteria = request.searchCriteria
     loads = request.loads
     
@@ -855,110 +937,81 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
     dest_city = destination.city if destination else None
     dest_state = destination.state if destination else None
     
-    # Get max deadhead from options
-    max_deadhead = 100
+    # Get initial max deadhead from options
+    if initial_max_deadhead is None:
+        max_deadhead = 100
+        if search_criteria.options:
+            max_deadhead = search_criteria.options.get('maxOriginDeadheadMiles', 100)
+    else:
+        max_deadhead = initial_max_deadhead
+    
+    # Get destination deadhead limit
+    dest_deadhead = max_deadhead
     if search_criteria.options:
-        max_deadhead = search_criteria.options.get('maxOriginDeadheadMiles', 100)
+        dest_deadhead = search_criteria.options.get('maxDestinationDeadheadMiles', max_deadhead)
     
-    # Find loads that start near origin
-    starting_loads = []
-    for load in loads_dict:
-        pickup_lat = load['origin']['latitude']
-        pickup_lon = load['origin']['longitude']
-        distance = haversine_distance(origin_lat, origin_lon, pickup_lat, pickup_lon)
-        if distance <= max_deadhead:
-            starting_loads.append((load, distance))
+    # Iterative deadhead increase - automatically increase if no routes found
+    iteration = 0
+    increment = 50  # Increase by 50 miles per iteration
+    max_deadhead_limit = 500  # Maximum deadhead to try
+    initial_origin_deadhead = max_deadhead
+    initial_dest_deadhead = dest_deadhead
     
-    starting_loads.sort(key=lambda x: x[1])
-    
-    # Build chain graph
-    chain_graph = defaultdict(list)
-    for i, load1 in enumerate(loads_dict):
-        for j, load2 in enumerate(loads_dict):
-            if i != j:
-                can_chain, deadhead = can_chain_loads(load1, load2, max_deadhead)
-                if can_chain:
-                    chain_graph[load1['load_id']].append((load2, deadhead))
-    
-    # Find all routes using DFS
-    all_routes = []
-    processed_chains = set()
-    
-    def dfs_route(current_chain: List[Tuple[Dict, float]], current_load: Dict, depth: int):
-        """Depth-first search to find all route chains."""
-        if depth > max_chain_length:
-            return
-        
-        # Check if current chain ends near destination
-        if dest_lat and dest_lon:
-            final_deliv = current_load['destination']
-            distance_to_dest = haversine_distance(
-                final_deliv['latitude'], final_deliv['longitude'],
-                dest_lat, dest_lon
-            )
-            
-            if distance_to_dest <= max_deadhead:
-                route = {
-                    'route_id': len(all_routes) + 1,
-                    'segments': [],
-                    'total_distance': 0,
-                    'total_revenue': 0,
-                    'total_deadhead': 0,
-                    'ends_near_destination': True,
-                    'final_distance_to_dest': distance_to_dest
-                }
-                
-                for load, deadhead in current_chain:
-                    route['segments'].append({
-                        'load_id': load['load_id'],
-                        'origin': f"{load['origin']['city']}, {load['origin']['state']}",
-                        'destination': f"{load['destination']['city']}, {load['destination']['state']}",
-                        'distance_miles': load['distance_miles'],
-                        'revenue': load['revenue']['amount'],
-                        'rate_per_mile': load['revenue']['rate_per_mile'],
-                        'pickup_window': load['pickup_window'],
-                        'delivery_window': load['delivery_window'],
-                        'weight_pounds': load.get('weight_pounds'),
-                        'deadhead_before': deadhead
-                    })
-                    route['total_distance'] += load['distance_miles']
-                    route['total_revenue'] += load['revenue']['amount']
-                    route['total_deadhead'] += deadhead
-                
-                chain_sig = tuple(l[0]['load_id'] for l in current_chain)
-                if chain_sig not in processed_chains:
-                    all_routes.append(route)
-                    processed_chains.add(chain_sig)
-        
-        # Try to extend chain
-        if current_load['load_id'] in chain_graph:
-            for next_load, deadhead in chain_graph[current_load['load_id']]:
-                if not any(l[0]['load_id'] == next_load['load_id'] for l in current_chain):
-                    dfs_route(current_chain + [(next_load, deadhead)], next_load, depth + 1)
-    
-    # Start DFS from each starting load
-    for start_load, start_deadhead in starting_loads:
-        chain_signature = (start_load['load_id'],)
-        if chain_signature not in processed_chains:
-            dfs_route([(start_load, start_deadhead)], start_load, 1)
-            processed_chains.add(chain_signature)
-    
-    # Also add single-load routes that go directly to destination
-    if dest_lat and dest_lon:
+    while iteration < max_iterations and max_deadhead <= max_deadhead_limit:
+        # Find loads that start near origin
+        starting_loads = []
         for load in loads_dict:
-            deliv = load['destination']
-            distance_to_dest = haversine_distance(
-                deliv['latitude'], deliv['longitude'],
-                dest_lat, dest_lon
-            )
-            if distance_to_dest <= max_deadhead:
-                pickup_lat = load['origin']['latitude']
-                pickup_lon = load['origin']['longitude']
-                start_distance = haversine_distance(origin_lat, origin_lon, pickup_lat, pickup_lon)
-                if start_distance <= max_deadhead:
+            pickup_lat = load['origin']['latitude']
+            pickup_lon = load['origin']['longitude']
+            distance = haversine_distance(origin_lat, origin_lon, pickup_lat, pickup_lon)
+            if distance <= max_deadhead:
+                starting_loads.append((load, distance))
+        
+        starting_loads.sort(key=lambda x: x[1])
+        
+        # Build chain graph
+        chain_graph = defaultdict(list)
+        for i, load1 in enumerate(loads_dict):
+            for j, load2 in enumerate(loads_dict):
+                if i != j:
+                    can_chain, deadhead = can_chain_loads(load1, load2, max_deadhead)
+                    if can_chain:
+                        chain_graph[load1['load_id']].append((load2, deadhead))
+        
+        # Find all routes using DFS with early stopping
+        all_routes = []
+        processed_chains = set()
+        max_routes_during_search = max_routes * 3  # Allow 3x during search, filter later
+        
+        def dfs_route(current_chain: List[Tuple[Dict, float]], current_load: Dict, depth: int):
+            # Early stopping if we already have too many routes
+            if len(all_routes) >= max_routes_during_search:
+                return
+            """Depth-first search to find all route chains."""
+            if depth > max_chain_length:
+                return
+            
+            # Check if current chain ends near destination
+            if dest_lat and dest_lon:
+                final_deliv = current_load['destination']
+                distance_to_dest = haversine_distance(
+                    final_deliv['latitude'], final_deliv['longitude'],
+                    dest_lat, dest_lon
+                )
+                
+                if distance_to_dest <= dest_deadhead:
                     route = {
                         'route_id': len(all_routes) + 1,
-                        'segments': [{
+                        'segments': [],
+                        'total_distance': 0,
+                        'total_revenue': 0,
+                        'total_deadhead': 0,
+                        'ends_near_destination': True,
+                        'final_distance_to_dest': distance_to_dest
+                    }
+                    
+                    for load, deadhead in current_chain:
+                        route['segments'].append({
                             'load_id': load['load_id'],
                             'origin': f"{load['origin']['city']}, {load['origin']['state']}",
                             'destination': f"{load['destination']['city']}, {load['destination']['state']}",
@@ -968,37 +1021,180 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
                             'pickup_window': load['pickup_window'],
                             'delivery_window': load['delivery_window'],
                             'weight_pounds': load.get('weight_pounds'),
-                            'deadhead_before': start_distance
-                        }],
-                        'total_distance': load['distance_miles'],
-                        'total_revenue': load['revenue']['amount'],
-                        'total_deadhead': start_distance,
-                        'ends_near_destination': True,
-                        'final_distance_to_dest': distance_to_dest
-                    }
-                    all_routes.append(route)
+                            'deadhead_before': deadhead
+                        })
+                        route['total_distance'] += load['distance_miles']
+                        route['total_revenue'] += load['revenue']['amount']
+                        route['total_deadhead'] += deadhead
+                    
+                    chain_sig = tuple(l[0]['load_id'] for l in current_chain)
+                    if chain_sig not in processed_chains:
+                        all_routes.append(route)
+                        processed_chains.add(chain_sig)
+            
+            # Try to extend chain
+            if current_load['load_id'] in chain_graph:
+                for next_load, deadhead in chain_graph[current_load['load_id']]:
+                    if not any(l[0]['load_id'] == next_load['load_id'] for l in current_chain):
+                        dfs_route(current_chain + [(next_load, deadhead)], next_load, depth + 1)
+        
+        # Start DFS from each starting load
+        for start_load, start_deadhead in starting_loads:
+            chain_signature = (start_load['load_id'],)
+            if chain_signature not in processed_chains:
+                dfs_route([(start_load, start_deadhead)], start_load, 1)
+                processed_chains.add(chain_signature)
+        
+        # Also add single-load routes that go directly to destination
+        if dest_lat and dest_lon:
+            for load in loads_dict:
+                deliv = load['destination']
+                distance_to_dest = haversine_distance(
+                    deliv['latitude'], deliv['longitude'],
+                    dest_lat, dest_lon
+                )
+                if distance_to_dest <= dest_deadhead:
+                    pickup_lat = load['origin']['latitude']
+                    pickup_lon = load['origin']['longitude']
+                    start_distance = haversine_distance(origin_lat, origin_lon, pickup_lat, pickup_lon)
+                    if start_distance <= max_deadhead:
+                        route = {
+                            'route_id': len(all_routes) + 1,
+                            'segments': [{
+                                'load_id': load['load_id'],
+                                'origin': f"{load['origin']['city']}, {load['origin']['state']}",
+                                'destination': f"{load['destination']['city']}, {load['destination']['state']}",
+                                'distance_miles': load['distance_miles'],
+                                'revenue': load['revenue']['amount'],
+                                'rate_per_mile': load['revenue']['rate_per_mile'],
+                                'pickup_window': load['pickup_window'],
+                                'delivery_window': load['delivery_window'],
+                                'weight_pounds': load.get('weight_pounds'),
+                                'deadhead_before': start_distance
+                            }],
+                            'total_distance': load['distance_miles'],
+                            'total_revenue': load['revenue']['amount'],
+                            'total_deadhead': start_distance,
+                            'ends_near_destination': True,
+                            'final_distance_to_dest': distance_to_dest
+                        }
+                        all_routes.append(route)
+        
+        # Remove duplicates
+        unique_routes = []
+        seen_signatures = set()
+        for route in all_routes:
+            sig = tuple((s['origin'], s['destination']) for s in route['segments'])
+            if sig not in seen_signatures:
+                seen_signatures.add(sig)
+                unique_routes.append(route)
+        
+        # Filter routes by quality criteria
+        filtered_routes = []
+        for route in unique_routes:
+            # Filter by minimum revenue
+            if route['total_revenue'] < min_revenue:
+                continue
+            
+            # Filter by deadhead ratio (deadhead should not exceed X% of total distance)
+            if route['total_distance'] > 0:
+                deadhead_ratio = route['total_deadhead'] / (route['total_distance'] + route['total_deadhead'])
+                if deadhead_ratio > max_deadhead_ratio:
+                    continue
+            
+            filtered_routes.append(route)
+        
+        # Sort by quality score: revenue per mile (highest first), then by total revenue
+        def quality_score(route):
+            total_miles = route['total_distance'] + route['total_deadhead']
+            if total_miles > 0:
+                revenue_per_mile = route['total_revenue'] / total_miles
+            else:
+                revenue_per_mile = 0
+            return (revenue_per_mile, route['total_revenue'], -route['total_deadhead'])
+        
+        filtered_routes.sort(key=quality_score, reverse=True)
+        
+        # If we don't have enough routes, relax the deadhead ratio filter and try again
+        if len(filtered_routes) < min_required_routes and len(unique_routes) > len(filtered_routes):
+            # Relax deadhead ratio to get more routes - be very aggressive
+            relaxed_deadhead_ratio = min(0.95, max_deadhead_ratio + 0.2)  # Allow up to 95% deadhead
+            relaxed_filtered = []
+            for route in unique_routes:
+                if route['total_revenue'] < min_revenue:
+                    continue
+                if route['total_distance'] > 0:
+                    deadhead_ratio = route['total_deadhead'] / (route['total_distance'] + route['total_deadhead'])
+                    if deadhead_ratio <= relaxed_deadhead_ratio:
+                        relaxed_filtered.append(route)
+                else:
+                    relaxed_filtered.append(route)
+            
+            # Re-sort relaxed results
+            relaxed_filtered.sort(key=quality_score, reverse=True)
+            
+            # Use relaxed results if we get more routes
+            if len(relaxed_filtered) >= min_required_routes or len(relaxed_filtered) > len(filtered_routes):
+                logger.info(f"Relaxed deadhead ratio to {relaxed_deadhead_ratio:.1%} to find more routes ({len(relaxed_filtered)} found, target: {min_required_routes})")
+                filtered_routes = relaxed_filtered
+        
+        # If still not enough, remove deadhead ratio filter entirely (only keep revenue filter)
+        if len(filtered_routes) < min_required_routes and len(unique_routes) > len(filtered_routes):
+            no_deadhead_filter = []
+            for route in unique_routes:
+                if route['total_revenue'] >= min_revenue:
+                    no_deadhead_filter.append(route)
+            
+            # Re-sort
+            no_deadhead_filter.sort(key=quality_score, reverse=True)
+            
+            if len(no_deadhead_filter) > len(filtered_routes):
+                logger.info(f"Removed deadhead ratio filter entirely to find more routes ({len(no_deadhead_filter)} found, target: {min_required_routes})")
+                filtered_routes = no_deadhead_filter
+        
+        # Limit to top N routes
+        original_count = len(filtered_routes)
+        if len(filtered_routes) > max_routes:
+            logger.info(f"Found {len(filtered_routes)} routes, limiting to top {max_routes} by quality")
+            filtered_routes = filtered_routes[:max_routes]
+        
+        # Renumber routes
+        for i, route in enumerate(filtered_routes):
+            route['route_id'] = i + 1
+        
+        # If we have enough routes, return them
+        if len(filtered_routes) >= min_required_routes:
+            if iteration > 0:
+                logger.info(f"Found {len(filtered_routes)} routes (from {len(unique_routes)} total) with deadhead increased to {max_deadhead} miles (origin) and {dest_deadhead} miles (destination)")
+            else:
+                if len(unique_routes) > len(filtered_routes):
+                    logger.info(f"Found {len(filtered_routes)} quality routes (filtered from {len(unique_routes)} total routes)")
+            return filtered_routes, max_deadhead
+        
+        # Not enough routes found - increase deadhead if we have fewer than required
+        if auto_increase_deadhead and len(filtered_routes) < min_required_routes:
+            iteration += 1
+            max_deadhead = initial_origin_deadhead + (increment * iteration)
+            dest_deadhead = initial_dest_deadhead + (increment * iteration)
+            if len(filtered_routes) == 0:
+                logger.info(f"No routes found with deadhead {max_deadhead - increment} miles. Trying {max_deadhead} miles (origin) and {dest_deadhead} miles (destination)...")
+            else:
+                logger.info(f"Only {len(filtered_routes)} routes found (need {min_required_routes}). Increasing deadhead from {max_deadhead - increment} to {max_deadhead} miles (origin) and {dest_deadhead} miles (destination)...")
+        else:
+            # Don't auto-increase, just return filtered routes (empty if none found)
+            return filtered_routes, max_deadhead
     
-    # Remove duplicates
-    unique_routes = []
-    seen_signatures = set()
-    for route in all_routes:
-        sig = tuple((s['origin'], s['destination']) for s in route['segments'])
-        if sig not in seen_signatures:
-            seen_signatures.add(sig)
-            unique_routes.append(route)
-    
-    # Sort by revenue (highest first), then by distance (shortest first)
-    unique_routes.sort(key=lambda x: (-x['total_revenue'], x['total_distance']))
-    
-    # Renumber routes
-    for i, route in enumerate(unique_routes):
-        route['route_id'] = i + 1
-    
-    return unique_routes
+    # Reached max iterations or max deadhead limit
+    if iteration > 0:
+        logger.warning(f"Reached maximum deadhead limit ({max_deadhead_limit} miles) or iterations ({max_iterations}) without finding routes")
+    # Return empty list if no routes found
+    return [], max_deadhead
 
 
 @app.post("/get_all_routes", response_model=AllRoutesResponse)
-async def get_all_routes(request: AllRoutesRequest, include_trip_plans: bool = False):
+async def get_all_routes(request: AllRoutesRequest, include_trip_plans: bool = False, 
+                         page: int = Query(1, ge=1, description="Page number (starts at 1)"),
+                         page_size: int = Query(50, ge=1, le=200, description="Number of routes per page (max 200)")):
     """
     Get all possible route chains from search criteria origin to destination.
     
@@ -1008,21 +1204,87 @@ async def get_all_routes(request: AllRoutesRequest, include_trip_plans: bool = F
     Args:
         request: The route request with searchCriteria and loads
         include_trip_plans: If True, generate detailed trip plans using Gemini AI (requires GEMINI_API_KEY)
+        page: Page number (starts at 1, default: 1)
+        page_size: Number of routes per page (default: 50, max: 200)
+    
+    Note:
+        - Deadhead miles are only increased if initial search returns 0 routes
+        - Maximum 200 total routes will be found (configurable via options.maxRoutes)
+        - Routes are sorted by quality (revenue per mile, then total revenue)
     """
+    
     try:
+        logger.info(f"Processing route request: {len(request.loads)} loads, page={page}, page_size={page_size}")
+        
         # Validate input
         if not request.loads:
+            logger.warning("Request rejected: No loads provided")
             raise HTTPException(status_code=400, detail="No loads provided")
         
         if not request.searchCriteria.origin:
+            logger.warning("Request rejected: No origin in search criteria")
             raise HTTPException(status_code=400, detail="Search criteria must include origin")
         
-        # Find all routes
-        routes = find_all_routes_from_request(request, max_chain_length=10)
+        # Get max routes limit from options (default: 200 total, 50 per page)
+        max_total_routes = 200  # Maximum total routes to find
+        min_revenue = 0
+        max_deadhead_ratio = 0.6  # Increased from 0.5 to 0.6 to allow more routes (deadhead can be up to 60%)
+        max_chain_length = 5  # Reduced from 10 to prevent combinatorial explosion
+        
+        # Adjust filters based on number of loads to ensure we get results
+        num_loads = len(request.loads)
+        min_required_routes = 10  # Minimum routes we want to find
+        
+        if request.searchCriteria.options:
+            max_total_routes = request.searchCriteria.options.get('maxRoutes', 200)
+            min_revenue = request.searchCriteria.options.get('minRevenue', 0)
+            max_deadhead_ratio = request.searchCriteria.options.get('maxDeadheadRatio', 0.6)
+            max_chain_length = request.searchCriteria.options.get('maxChainLength', 5)
+        
+        # For 50-100 loads, we want at least 5-10 results
+        # Adjust max_deadhead_ratio to be more lenient if we have many loads
+        if 50 <= num_loads <= 100:
+            # More lenient filtering for medium-sized input
+            if max_deadhead_ratio < 0.8:
+                max_deadhead_ratio = 0.8  # Allow up to 80% deadhead (very lenient)
+            min_required_routes = 10  # Target at least 10 routes (5-10 range)
+            max_chain_length = 3  # Max 3 legs in chain (less than 4)
+        elif num_loads > 100:
+            # Even more lenient for large inputs
+            if max_deadhead_ratio < 0.85:
+                max_deadhead_ratio = 0.85  # Allow up to 85% deadhead
+            min_required_routes = 15
+            max_chain_length = 3  # Max 3 legs in chain (less than 4)
+        
+        # Calculate pagination
+        # We need to find enough routes to fill the requested page
+        # Find max_routes = page * page_size to ensure we have enough for pagination
+        # But also ensure we find at least min_required_routes
+        max_routes_to_find = max(min_required_routes, min(max_total_routes, page * page_size))
+        
+        # Find all routes with automatic deadhead increase and smart filtering
+        # Only increase deadhead if initial search returns 0 routes
+        routes, actual_deadhead = find_all_routes_from_request(
+            request, 
+            max_chain_length=max_chain_length,
+            auto_increase_deadhead=True,
+            max_iterations=10,
+            max_routes=max_routes_to_find,
+            min_revenue=min_revenue,
+            max_deadhead_ratio=max_deadhead_ratio,
+            min_required_routes=min_required_routes
+        )
+        
+        # Apply pagination
+        total_routes_found = len(routes)
+        start_idx = (page - 1) * page_size
+        end_idx = start_idx + page_size
+        paginated_routes = routes[start_idx:end_idx]
+        total_pages = (total_routes_found + page_size - 1) // page_size if page_size > 0 else 1
         
         # Convert to response format
         route_options = []
-        for route in routes:
+        for route in paginated_routes:
             segments = []
             for seg in route['segments']:
                 segments.append(RouteSegment(
@@ -1080,9 +1342,10 @@ async def get_all_routes(request: AllRoutesRequest, include_trip_plans: bool = F
                 if plan:
                     trip_plans.append(plan)
         
-        return AllRoutesResponse(
-            total_routes=len(route_options),
-            routes=route_options,
+        # Create response object
+        response_data = AllRoutesResponse(
+            total_routes=total_routes_found,  # Total routes found (before pagination)
+            routes=route_options,  # Paginated routes for current page
             search_criteria={
                 'origin': {
                     'city': request.searchCriteria.origin.city,
@@ -1098,12 +1361,23 @@ async def get_all_routes(request: AllRoutesRequest, include_trip_plans: bool = F
                 } if request.searchCriteria.destination else None,
                 'options': request.searchCriteria.options or {}
             },
-            message=f"Found {len(route_options)} possible routes" + (" with detailed trip plans" if trip_plans else ""),
-            trip_plans=trip_plans
+            message=f"Found {total_routes_found} total routes. Showing page {page} of {total_pages} ({len(route_options)} routes)" + (" with detailed trip plans" if trip_plans else ""),
+            trip_plans=trip_plans,
+            pagination={
+                'page': page,
+                'page_size': page_size,
+                'total_pages': total_pages,
+                'total_routes': total_routes_found,
+                'routes_on_page': len(route_options)
+            }
         )
+        
+        logger.info(f"Route request completed: {total_routes_found} routes found, returning page {page}")
+        return response_data
     
     except HTTPException:
         raise
     except Exception as e:
+        logger.error(f"Error processing route request: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 

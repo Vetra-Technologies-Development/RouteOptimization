@@ -1,113 +1,54 @@
-# VRPTW Solver API
+# Route Optimization API
 
-A FastAPI-based Vehicle Routing Problem with Time Windows (VRPTW) solver that finds optimal multi-load chaining routes using Google OR-Tools.
+FastAPI-based route optimization service for finding optimal trucking routes with load chaining.
 
 ## Features
 
-- **Time Window Constraints**: Ensures all stops are visited within their specified time windows
-- **Capacity Constraints**: Tracks vehicle load and ensures it never exceeds maximum capacity
-- **Pickup/Delivery Precedence**: Ensures pickups are always visited before their corresponding deliveries, and both are handled by the same vehicle
-- **Route Time Limits**: Enforces maximum route time per vehicle
-- **Multi-Vehicle Support**: Solves problems with multiple vehicles
-- **All Possible Routes**: Find all feasible route chains using graph-based search
-- **Gemini AI Integration**: Generate detailed trip plans with fuel stops, rest stops, and recommendations (optional)
+- Route chain optimization with configurable deadhead limits
+- Automatic deadhead adjustment when no routes are found
+- Pagination support for large result sets
+- Optional Gemini AI integration for detailed trip planning
+- CORS enabled for frontend integration
 
 ## Installation
-
-1. Install Python 3.8 or higher
-2. Create a virtual environment (recommended):
-
-```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-See [SETUP.md](SETUP.md) for detailed setup instructions.
+## Environment Variables
 
-## Running the Application
+### Logging Configuration
+- `LOG_LEVEL` (default: `INFO`): Logging level - `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`
+- `LOG_FORMAT` (default: `text`): Log format - `text` or `json`
+- `LOG_TO_FILE` (default: `false`): Enable file logging - `true` or `false`
+- `LOG_FILE_PATH` (default: `api.log`): Path to log file (if `LOG_TO_FILE=true`)
+- `LOG_API_REQUESTS` (default: `true`): Log all API requests and responses - `true` or `false`
 
-Start the FastAPI server:
+### CORS Configuration
+- `CORS_ORIGINS` (default: `*`): Comma-separated list of allowed origins, or `*` for all
+
+### Optional Features
+- `GEMINI_API_KEY` (optional): Google Gemini API key for trip planning features
+
+See `.env.example` for a complete example configuration.
+
+## Running Locally
 
 ```bash
-uvicorn main:app --reload
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
-
-The API will be available at `http://localhost:8000`
-
-- API Documentation: `http://localhost:8000/docs`
-- Alternative API Docs: `http://localhost:8000/redoc`
 
 ## API Endpoints
 
-### POST `/solve_routes`
-
-Solves a Vehicle Routing Problem with Time Windows using OR-Tools optimization.
-
-#### Request Body Schema
-
-```json
-{
-  "time_matrix": [[0, 10, 20], [10, 0, 15], [20, 15, 0]],
-  "pickups_deliveries": [[1, 2]],
-  "demands": [0, 1000, -1000],
-  "time_windows": [[0, 1440], [60, 120], [180, 240]],
-  "num_vehicles": 1,
-  "vehicle_capacity": 5000,
-  "max_route_time": 1440,
-  "depot_index": 0
-}
-```
-
-#### Response Schema
-
-```json
-{
-  "routes": [
-    {
-      "vehicle_id": 0,
-      "total_route_time_minutes": 240,
-      "stops": [
-        {
-          "node_index": 1,
-          "arrival_time_minutes": 60,
-          "load_on_vehicle": 1000
-        },
-        {
-          "node_index": 2,
-          "arrival_time_minutes": 180,
-          "load_on_vehicle": 0
-        }
-      ]
-    }
-  ],
-  "solution_found": true,
-  "message": "Solution found successfully."
-}
-```
-
-## Input Parameters
-
-- **time_matrix**: Square matrix where `time_matrix[i][j]` represents travel time in minutes from node `i` to node `j`
-- **pickups_deliveries**: List of `[pickup_index, delivery_index]` pairs
-- **demands**: List of load changes at each node (positive for pickup, negative for delivery, zero for depot)
-- **time_windows**: List of `[earliest_start_min, latest_start_min]` for each node
-- **num_vehicles**: Number of available vehicles
-- **vehicle_capacity**: Maximum weight capacity per vehicle (in pounds)
-- **max_route_time**: Maximum route time per vehicle in minutes (e.g., 1440 for 24 hours)
-- **depot_index**: Index of the depot node (default: 0)
-
 ### POST `/get_all_routes`
 
-Get all possible route chains from search criteria. Accepts raw JSON with `searchCriteria` and `loads` structure.
+Find all possible route chains from origin to destination.
 
 **Query Parameters:**
-- `include_trip_plans` (optional): If `true`, generates detailed trip plans using Gemini AI (requires `GEMINI_API_KEY`)
+- `page` (int, default: 1): Page number
+- `page_size` (int, default: 50): Number of routes per page (max 200)
+- `include_trip_plans` (bool, default: false): Generate detailed trip plans with Gemini AI
 
 **Request Body:**
 ```json
@@ -124,25 +65,35 @@ Get all possible route chains from search criteria. Accepts raw JSON with `searc
       "longitude": -96.7970,
       "city": "Dallas",
       "state": "TX"
+    },
+    "options": {
+      "maxOriginDeadheadMiles": 100,
+      "maxDestinationDeadheadMiles": 100,
+      "maxRoutes": 200,
+      "maxChainLength": 3
     }
   },
   "loads": [...]
 }
 ```
 
-See [GEMINI_SETUP.md](GEMINI_SETUP.md) for Gemini AI setup instructions.
+### POST `/solve_routes` (Optional - requires ortools)
 
-## Example Usage
+Solve vehicle routing problem with time windows using OR-Tools.
 
-- `example_usage.py` - Basic VRPTW solver example
-- `example_get_all_routes.py` - Get all possible routes with optional Gemini AI trip planning
+## Deployment
 
-## Constraints
+### Vercel
 
-The solver enforces:
+This project is configured for Vercel deployment. Simply connect your repository to Vercel.
 
-1. **Time Windows**: Each node must be visited within its specified time window
-2. **Capacity**: Vehicle load never exceeds `vehicle_capacity`
-3. **Pickup/Delivery**: Pickups must be visited before their deliveries, and both must be on the same vehicle
-4. **Route Time**: Each route's total time cannot exceed `max_route_time`
+### Other Platforms
+
+The API can be deployed to any platform that supports Python/FastAPI:
+- Railway
+- Render
+- Heroku
+- AWS Lambda (with Mangum)
+- Google Cloud Run
+- Azure Container Instances
 
