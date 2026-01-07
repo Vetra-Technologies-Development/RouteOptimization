@@ -1,8 +1,27 @@
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
-ortools==9.9.3963
-requests==2.31.0
-google-generativeai==0.3.2
-python-dotenv==1.0.0
+# Core dependencies (required)
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pydantic>=2.10.0
+requests>=2.32.0
+python-dotenv>=1.0.0
+
+# Testing dependencies
+pytest>=7.4.0
+httpx>=0.24.0
+pytest-asyncio>=0.21.0
+
+# Optional: Google Generative AI for trip planning features
+# Install manually if needed: pip install google-generativeai
+# Note: May require compatible Python version (3.8-3.13 recommended)
+# google-generativeai>=0.8.0
+
+# Optional: Supabase for LoadBoard Network integration
+# Install manually if needed: pip install supabase
+# Note: Requires Microsoft Visual C++ Build Tools on Windows for some dependencies
+# supabase>=2.10.0
+
+# Optional: OR-Tools for advanced route solving
+# Install manually if needed: pip install ortools
+# Note: Requires compatible Python version (3.8-3.13 recommended)
+# ortools>=9.8.0
 

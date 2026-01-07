@@ -8,19 +8,6 @@ import logging
 from datetime import datetime, timedelta
 from collections import defaultdict
 
-# Try to import ortools, but make it optional
-try:
-    from ortools.constraint_solver import routing_enums_pb2
-    from ortools.constraint_solver import pywrapcp
-    ORTOOLS_AVAILABLE = True
-except ImportError:
-    ORTOOLS_AVAILABLE = False
-    logger.warning("ortools not installed. The /solve_routes endpoint will not be available.")
-    logger.info("Install ortools with: pip install ortools")
-    # Create dummy classes to prevent import errors
-    routing_enums_pb2 = None
-    pywrapcp = None
-
 # Load environment variables from .env file
 try:
     from dotenv import load_dotenv
@@ -47,6 +34,19 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+# Try to import ortools, but make it optional
+try:
+    from ortools.constraint_solver import routing_enums_pb2
+    from ortools.constraint_solver import pywrapcp
+    ORTOOLS_AVAILABLE = True
+except ImportError:
+    ORTOOLS_AVAILABLE = False
+    logger.warning("ortools not installed. The /solve_routes endpoint will not be available.")
+    logger.info("Install ortools with: pip install ortools")
+    # Create dummy classes to prevent import errors
+    routing_enums_pb2 = None
+    pywrapcp = None
+
 # Gemini AI imports
 try:
     import google.generativeai as genai
@@ -54,6 +54,15 @@ try:
 except ImportError:
     GEMINI_AVAILABLE = False
     logger.warning("google-generativeai not installed. Gemini features will be disabled.")
+
+# Supabase imports
+try:
+    from supabase import create_client, Client
+    SUPABASE_AVAILABLE = True
+except ImportError:
+    SUPABASE_AVAILABLE = False
+    logger.warning("supabase not installed. LoadBoard Network integration will not be available.")
+    Client = None
 
 app = FastAPI(title="VRPTW Solver", description="Vehicle Routing Problem with Time Windows Solver")
 
@@ -93,6 +102,27 @@ else:
         logger.info("Install google-generativeai to enable Gemini features: pip install google-generativeai")
     elif not GEMINI_API_KEY:
         logger.info("Set GEMINI_API_KEY environment variable to enable Gemini features")
+
+# Initialize Supabase client
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+supabase_client: Optional[Client] = None
+
+if SUPABASE_AVAILABLE and SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY:
+    try:
+        supabase_client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        SUPABASE_ENABLED = True
+        logger.info("Supabase client initialized successfully")
+    except Exception as e:
+        SUPABASE_ENABLED = False
+        logger.error(f"Failed to initialize Supabase client: {e}")
+        supabase_client = None
+else:
+    SUPABASE_ENABLED = False
+    if not SUPABASE_AVAILABLE:
+        logger.info("Install supabase to enable LoadBoard Network integration: pip install supabase")
+    elif not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
+        logger.info("Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables to enable LoadBoard Network integration")
 
 
 # Pydantic Model for Input Load Data
@@ -600,9 +630,12 @@ async def root():
         "message": "VRPTW Solver API",
         "endpoints": {
             "/solve_routes": "POST - Solve Vehicle Routing Problem with Time Windows",
-            "/get_all_routes": "POST - Get all possible route chains from search criteria (use ?include_trip_plans=true for Gemini AI planning)"
+            "/get_all_routes": "POST - Get all possible route chains from search criteria (use ?include_trip_plans=true for Gemini AI planning)",
+            "/loadboard/post_loads": "POST - LoadBoard Network post loads endpoint (receives XML, saves to Supabase)",
+            "/loadboard/remove_loads": "POST - LoadBoard Network remove loads endpoint (receives XML, removes from Supabase)"
         },
-        "gemini_enabled": GEMINI_ENABLED
+        "gemini_enabled": GEMINI_ENABLED,
+        "supabase_enabled": SUPABASE_ENABLED
     }
 
 
@@ -610,6 +643,11 @@ async def root():
 async def health():
     """Health check endpoint."""
     return {"status": "healthy"}
+
+
+# Import LoadBoard router from new structure
+from app.routers import loadboard
+app.include_router(loadboard.router)
 
 
 # Pydantic Models for All Routes Endpoint
