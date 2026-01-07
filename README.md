@@ -49,49 +49,6 @@ pip install ortools
 - `tracking_number` (text): Load tracking number
 - All other load fields as needed
 
-## Running Locally
-
-### Using Scripts (Recommended)
-
-**Windows:**
-```powershell
-# Start the server
-.\scripts\start.ps1
-# Or use the batch file wrapper
-start.bat
-
-# Stop the server
-.\scripts\stop.ps1
-# Or
-stop.bat
-
-# Restart the server
-.\scripts\restart.ps1
-# Or
-restart.bat
-```
-
-**Linux/Mac:**
-```bash
-# Make scripts executable (first time only)
-chmod +x scripts/*.sh
-
-# Start the server
-./scripts/start.sh
-
-# Stop the server
-./scripts/stop.sh
-
-# Restart the server
-./scripts/restart.sh
-```
-
-The scripts will:
-- Automatically create and activate a virtual environment
-- Install dependencies from `requirements.txt`
-- Start the server with auto-reload enabled
-- Use port 8000 by default (or PORT environment variable)
-
 ### Manual Start
 
 ```bash
