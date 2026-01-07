@@ -5,23 +5,16 @@ pydantic>=2.10.0
 requests>=2.32.0
 python-dotenv>=1.0.0
 
-# Testing dependencies
-pytest>=7.4.0
-httpx>=0.24.0
-pytest-asyncio>=0.21.0
+# Supabase for LoadBoard Network integration
+# Note: On Vercel, this should install successfully as the build environment has necessary tools
+supabase>=2.10.0
 
 # Optional: Google Generative AI for trip planning features
-# Install manually if needed: pip install google-generativeai
-# Note: May require compatible Python version (3.8-3.13 recommended)
+# Uncomment if needed:
 # google-generativeai>=0.8.0
 
-# Optional: Supabase for LoadBoard Network integration
-# Install manually if needed: pip install supabase
-# Note: Requires Microsoft Visual C++ Build Tools on Windows for some dependencies
-# supabase>=2.10.0
-
 # Optional: OR-Tools for advanced route solving
-# Install manually if needed: pip install ortools
-# Note: Requires compatible Python version (3.8-3.13 recommended)
+# Note: May not be available for all Python versions on Vercel
+# Uncomment if needed:
 # ortools>=9.8.0
 

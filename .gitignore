@@ -47,9 +47,11 @@ logs/
 .DS_Store
 Thumbs.db
 
-# Test files
+# Test files (but allow tests/ directory)
 test_*.py
+!tests/test_*.py
 *_test.py
+!tests/*_test.py
 
 # Temporary files
 *.tmp
