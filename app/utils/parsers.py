@@ -47,11 +47,16 @@ def parse_load_xml(load_elem) -> Dict[str, Any]:
         load_data['origin_city'] = origin.find('city').text if origin.find('city') is not None else None
         load_data['origin_state'] = origin.find('state').text if origin.find('state') is not None else None
         load_data['origin_postcode'] = origin.find('postcode').text if origin.find('postcode') is not None else None
-        load_data['origin_latitude'] = float(origin.find('latitude').text) if origin.find('latitude') is not None and origin.find('latitude').text else None
-        load_data['origin_longitude'] = float(origin.find('longitude').text) if origin.find('longitude') is not None and origin.find('longitude').text else None
+        load_data['origin_county'] = origin.find('county').text if origin.find('county') is not None else None
+        load_data['origin_country'] = origin.find('country').text if origin.find('country') is not None else None
+        load_data['origin_latitude'] = float(origin.find('latitude').text) if origin.find('latitude') is not None and origin.find('latitude').text and origin.find('latitude').text != '0' else None
+        load_data['origin_longitude'] = float(origin.find('longitude').text) if origin.find('longitude') is not None and origin.find('longitude').text and origin.find('longitude').text != '0' else None
         
         origin_date_start = origin.find('date-start')
         load_data['origin_pickup_date'] = parse_date_element(origin_date_start)
+        
+        origin_date_end = origin.find('date-end')
+        load_data['origin_pickup_date_end'] = parse_date_element(origin_date_end)
     
     # Destination
     destination = load_elem.find('destination')
@@ -59,11 +64,16 @@ def parse_load_xml(load_elem) -> Dict[str, Any]:
         load_data['destination_city'] = destination.find('city').text if destination.find('city') is not None else None
         load_data['destination_state'] = destination.find('state').text if destination.find('state') is not None else None
         load_data['destination_postcode'] = destination.find('postcode').text if destination.find('postcode') is not None else None
-        load_data['destination_latitude'] = float(destination.find('latitude').text) if destination.find('latitude') is not None and destination.find('latitude').text else None
-        load_data['destination_longitude'] = float(destination.find('longitude').text) if destination.find('longitude') is not None and destination.find('longitude').text else None
+        load_data['destination_county'] = destination.find('county').text if destination.find('county') is not None else None
+        load_data['destination_country'] = destination.find('country').text if destination.find('country') is not None else None
+        load_data['destination_latitude'] = float(destination.find('latitude').text) if destination.find('latitude') is not None and destination.find('latitude').text and destination.find('latitude').text != '0' else None
+        load_data['destination_longitude'] = float(destination.find('longitude').text) if destination.find('longitude') is not None and destination.find('longitude').text and destination.find('longitude').text != '0' else None
         
         dest_date_start = destination.find('date-start')
         load_data['destination_delivery_date'] = parse_date_element(dest_date_start)
+        
+        dest_date_end = destination.find('date-end')
+        load_data['destination_delivery_date_end'] = parse_date_element(dest_date_end)
     
     # Equipment
     equipment = load_elem.find('equipment')
