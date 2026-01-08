@@ -114,13 +114,5 @@ The `vercel.json` file is already configured with:
 - 30-second function timeout
 - Proper routing configuration
 
-### Other Platforms
 
-The API can be deployed to any platform that supports Python/FastAPI:
-- Railway
-- Render
-- Heroku
-- AWS Lambda (with Mangum)
-- Google Cloud Run
-- Azure Container Instances
 
