@@ -59,43 +59,6 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ### POST `/get_all_routes`
 
-Find all possible route chains from origin to destination.
-
-**Query Parameters:**
-- `page` (int, default: 1): Page number
-- `page_size` (int, default: 50): Number of routes per page (max 200)
-- `include_trip_plans` (bool, default: false): Generate detailed trip plans with Gemini AI
-
-**Request Body:**
-```json
-{
-  "searchCriteria": {
-    "origin": {
-      "latitude": 42.3601,
-      "longitude": -71.0589,
-      "city": "Boston",
-      "state": "MA"
-    },
-    "destination": {
-      "latitude": 32.7767,
-      "longitude": -96.7970,
-      "city": "Dallas",
-      "state": "TX"
-    },
-    "options": {
-      "maxOriginDeadheadMiles": 100,
-      "maxDestinationDeadheadMiles": 100,
-      "maxRoutes": 200,
-      "maxChainLength": 3
-    }
-  },
-  "loads": [...]
-}
-```
-
-### POST `/solve_routes` (Optional - requires ortools)
-
-Solve vehicle routing problem with time windows using OR-Tools.
 
 ## Deployment
 
