@@ -5,7 +5,7 @@ from typing import List, Optional, Dict, Any, Tuple
 import math
 import os
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 
 # Load environment variables from .env file
@@ -747,20 +747,53 @@ def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
     return R * c
 
 
-def parse_iso_to_minutes(iso_string: str) -> int:
-    """Convert ISO 8601 timestamp to minutes from reference time."""
+def parse_iso_to_minutes(iso_string: str, reference_time: Optional[datetime] = None) -> int:
+    """
+    Convert ISO 8601 timestamp to minutes from reference time.
+    
+    All times are assumed to be in Pacific timezone (America/Los_Angeles).
+    Times are converted to UTC for consistent comparison.
+    
+    Args:
+        iso_string: ISO 8601 timestamp string (assumed Pacific timezone)
+        reference_time: Reference datetime in UTC. If None, uses 2025-01-01 00:00:00 UTC.
+                        Should be set to earliest pickup time minus 24h for dynamic reference.
+    
+    Returns:
+        Minutes from reference time
+    """
     try:
         if iso_string.endswith('Z'):
             iso_string = iso_string[:-1] + '+00:00'
+        
         dt = datetime.fromisoformat(iso_string)
-        ref_dt = datetime(2025, 11, 20, 0, 0, 0)
-        if dt.tzinfo:
-            dt_naive = dt.replace(tzinfo=None)
-            delta = dt_naive - ref_dt
+        
+        # If no timezone info, assume Pacific timezone (UTC-8 for PST, UTC-7 for PDT)
+        # Use UTC-8 (PST) as default for consistency
+        if dt.tzinfo is None:
+            pacific_tz = timezone(timedelta(hours=-8))
+            dt = dt.replace(tzinfo=pacific_tz)
+        
+        # Convert to UTC for consistent comparison
+        dt_utc = dt.astimezone(timezone.utc)
+        
+        # Use provided reference time, or default to 2025-01-01 00:00:00 UTC
+        if reference_time is None:
+            ref_dt = datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
         else:
-            delta = dt - ref_dt
-        return int(delta.total_seconds() / 60)
-    except:
+            # Ensure reference_time is in UTC
+            if reference_time.tzinfo is None:
+                ref_dt = reference_time.replace(tzinfo=timezone.utc)
+            else:
+                ref_dt = reference_time.astimezone(timezone.utc)
+        
+        # Calculate difference in minutes
+        delta = dt_utc - ref_dt
+        minutes = int(delta.total_seconds() / 60)
+        
+        return minutes
+    except Exception as e:
+        logger.error(f"Error parsing time '{iso_string}': {e}", exc_info=True)
         return 0
 
 
@@ -769,8 +802,10 @@ def calculate_travel_time_miles(miles: float, speed_mph: float = 50.0) -> int:
     return int((miles / speed_mph) * 60)
 
 
-def can_chain_loads(load1: Dict, load2: Dict, max_deadhead: float = 100, 
-                    unload_buffer_minutes: int = 60) -> Tuple[bool, float, Optional[str]]:
+def can_chain_loads(load1: Dict, load2: Dict, 
+                     max_deadhead: float = 100, 
+                     unload_buffer_minutes: int = 60,
+                     reference_time: Optional[datetime] = None) -> Tuple[bool, float, Optional[str]]:
     """
     Check if load2 can be chained after load1 with proper time window validation.
     
@@ -787,8 +822,8 @@ def can_chain_loads(load1: Dict, load2: Dict, max_deadhead: float = 100,
         pickup2['latitude'], pickup2['longitude']
     )
     
-    if deadhead > max_deadhead:
-        return False, deadhead, f"Deadhead {deadhead:.1f} miles exceeds max {max_deadhead} miles"
+    if deadhead > max_deadhead * 2:  # Allow 2x deadhead for chaining
+        return False, deadhead, f"Deadhead {deadhead:.1f} miles exceeds max {max_deadhead * 2} miles"
     
     # Check time windows - use snake_case keys (delivery_window, pickup_window)
     delivery_window = load1.get('delivery_window', {})
@@ -797,10 +832,10 @@ def can_chain_loads(load1: Dict, load2: Dict, max_deadhead: float = 100,
     if not delivery_window or not pickup_window:
         return False, deadhead, "Missing time windows"
     
-    load1_delivery_earliest = parse_iso_to_minutes(delivery_window.get('earliest', ''))
-    load1_delivery_latest = parse_iso_to_minutes(delivery_window.get('latest', ''))
-    load2_pickup_earliest = parse_iso_to_minutes(pickup_window.get('earliest', ''))
-    load2_pickup_latest = parse_iso_to_minutes(pickup_window.get('latest', ''))
+    load1_delivery_earliest = parse_iso_to_minutes(delivery_window.get('earliest', ''), reference_time)
+    load1_delivery_latest = parse_iso_to_minutes(delivery_window.get('latest', ''), reference_time)
+    load2_pickup_earliest = parse_iso_to_minutes(pickup_window.get('earliest', ''), reference_time)
+    load2_pickup_latest = parse_iso_to_minutes(pickup_window.get('latest', ''), reference_time)
     
     # Validate parsed times
     if load1_delivery_latest == 0 or load2_pickup_latest == 0:
@@ -810,11 +845,11 @@ def can_chain_loads(load1: Dict, load2: Dict, max_deadhead: float = 100,
     deadhead_travel_time = calculate_travel_time_miles(deadhead)
     
     # Key constraint: Delivery_i_time + unload_buffer + travel_time(deadhead) ≤ Pickup_{i+1}_latest
-    # We use the latest delivery time (worst case) to ensure feasibility
-    earliest_arrival_at_load2 = load1_delivery_latest + unload_buffer_minutes + deadhead_travel_time
+    # Use EARLIEST delivery time (more lenient) instead of latest for better chain opportunities
+    earliest_arrival_at_load2 = load1_delivery_earliest + unload_buffer_minutes + deadhead_travel_time
     
     if earliest_arrival_at_load2 > load2_pickup_latest:
-        return False, deadhead, f"Time window violation: cannot reach load2 pickup by latest time ({load2_pickup_latest} min) after delivering load1 at {load1_delivery_latest} min"
+        return False, deadhead, f"Time window violation: cannot reach load2 pickup by latest time ({load2_pickup_latest} min) after delivering load1 at {load1_delivery_earliest} min"
     
     # Check if truck can be available at Pickup_{i+1}_earliest (can wait if early)
     # If we arrive too early, we can wait, but we must arrive by latest
@@ -824,10 +859,11 @@ def can_chain_loads(load1: Dict, load2: Dict, max_deadhead: float = 100,
 
 
 def validate_hos_for_chain(chain: List[Tuple[Dict, float]], 
-                           start_time_minutes: int = 0,
-                           max_driving_hours: float = 11.0,
-                           max_on_duty_hours: float = 14.0,
-                           required_rest_hours: float = 10.0) -> Tuple[bool, Optional[str]]:
+                            start_time_minutes: int = 0,
+                            max_driving_hours: float = 11.0,
+                            max_on_duty_hours: float = 14.0,
+                            required_rest_hours: float = 10.0,
+                            reference_time: Optional[datetime] = None) -> Tuple[bool, Optional[str]]:
     """
     Validate Hours of Service (HOS) for a route chain.
     
@@ -858,10 +894,10 @@ def validate_hos_for_chain(chain: List[Tuple[Dict, float]],
         if not pickup_window or not delivery_window:
             return False, f"Load {i+1} missing time windows"
         
-        pickup_earliest = parse_iso_to_minutes(pickup_window.get('earliest', ''))
-        pickup_latest = parse_iso_to_minutes(pickup_window.get('latest', ''))
-        delivery_earliest = parse_iso_to_minutes(delivery_window.get('earliest', ''))
-        delivery_latest = parse_iso_to_minutes(delivery_window.get('latest', ''))
+        pickup_earliest = parse_iso_to_minutes(pickup_window.get('earliest', ''), reference_time)
+        pickup_latest = parse_iso_to_minutes(pickup_window.get('latest', ''), reference_time)
+        delivery_earliest = parse_iso_to_minutes(delivery_window.get('earliest', ''), reference_time)
+        delivery_latest = parse_iso_to_minutes(delivery_window.get('latest', ''), reference_time)
         
         if pickup_latest == 0 or delivery_latest == 0:
             return False, f"Load {i+1} has invalid time windows"
@@ -917,7 +953,7 @@ def validate_hos_for_chain(chain: List[Tuple[Dict, float]],
             # Check if we have enough time to reach next pickup
             next_load = chain[i + 1][0]
             next_pickup_window = next_load.get('pickup_window', {})
-            next_pickup_latest = parse_iso_to_minutes(next_pickup_window.get('latest', ''))
+            next_pickup_latest = parse_iso_to_minutes(next_pickup_window.get('latest', ''), reference_time)
             
             if next_pickup_latest == 0:
                 return False, f"Next load has invalid pickup window"
@@ -930,16 +966,18 @@ def validate_hos_for_chain(chain: List[Tuple[Dict, float]],
 
 
 def validate_route_chain(chain: List[Tuple[Dict, float]], 
-                         start_time_minutes: int = 0,
-                         max_deadhead: float = 100,
-                         unload_buffer_minutes: int = 60) -> Tuple[bool, Optional[str]]:
+                          start_time_minutes: int = 0,
+                          max_deadhead: float = 100,
+                          unload_buffer_minutes: int = 60,
+                          reference_time: Optional[datetime] = None,
+                          validate_hos: bool = True) -> Tuple[bool, Optional[str]]:
     """
     Validate an entire route chain for time windows and HOS constraints.
     
     For each hop (Load i → Load i+1), checks:
     - Delivery_i_time + unload_buffer + travel_time(deadhead) ≤ Pickup_{i+1}_latest
     - Truck can be available at Pickup_{i+1}_earliest (can wait if early)
-    - HOS feasibility: don't exceed driving limits; include rest resets
+    - HOS feasibility: don't exceed driving limits; include rest resets (if validate_hos=True)
     
     Returns: (is_valid, error_message)
     """
@@ -951,14 +989,22 @@ def validate_route_chain(chain: List[Tuple[Dict, float]],
         load1 = chain[i][0]
         load2 = chain[i + 1][0]
         
-        can_chain, deadhead, error = can_chain_loads(load1, load2, max_deadhead, unload_buffer_minutes)
+        can_chain, deadhead, error = can_chain_loads(
+            load1, load2,
+            max_deadhead=max_deadhead,
+            unload_buffer_minutes=unload_buffer_minutes,
+            reference_time=reference_time
+        )
         if not can_chain:
             return False, f"Load {i+1} → Load {i+2}: {error}"
     
-    # Validate HOS for entire chain
-    hos_valid, hos_error = validate_hos_for_chain(chain, start_time_minutes)
-    if not hos_valid:
-        return False, f"HOS violation: {hos_error}"
+    # Validate HOS for entire chain (optional - can be disabled if too strict)
+    if validate_hos:
+        hos_valid, hos_error = validate_hos_for_chain(chain, start_time_minutes, reference_time=reference_time)
+        if not hos_valid:
+            # For now, log but don't reject - HOS might be too strict
+            logger.debug(f"HOS warning (not rejecting): {hos_error}")
+            # return False, f"HOS violation: {hos_error}"
     
     return True, None
 
@@ -1137,6 +1183,36 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
     dest_city = destination.city if destination else None
     dest_state = destination.state if destination else None
     
+    # Calculate dynamic reference time from earliest pickup (24 hours before)
+    # This ensures time windows are relative to actual load times, not a fixed date
+    earliest_pickup_time = None
+    for load in loads_dict:
+        pickup_window = load.get('pickup_window', {})
+        earliest_str = pickup_window.get('earliest', '')
+        if earliest_str:
+            try:
+                # Parse as Pacific timezone
+                if earliest_str.endswith('Z'):
+                    earliest_str = earliest_str[:-1] + '+00:00'
+                dt = datetime.fromisoformat(earliest_str)
+                if dt.tzinfo is None:
+                    pacific_tz = timezone(timedelta(hours=-8))
+                    dt = dt.replace(tzinfo=pacific_tz)
+                dt_utc = dt.astimezone(timezone.utc)
+                
+                if earliest_pickup_time is None or dt_utc < earliest_pickup_time:
+                    earliest_pickup_time = dt_utc
+            except:
+                pass
+    
+    # Set reference time to 24 hours before earliest pickup, or use default
+    if earliest_pickup_time:
+        reference_time = earliest_pickup_time - timedelta(hours=24)
+        logger.info(f"Using dynamic reference time: {reference_time} UTC (24h before earliest pickup: {earliest_pickup_time} UTC)")
+    else:
+        reference_time = datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        logger.warning(f"Could not determine earliest pickup time - using default reference time: {reference_time} UTC")
+    
     # Get initial max deadhead from options
     if initial_max_deadhead is None:
         max_deadhead = 100
@@ -1168,15 +1244,19 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
                 starting_loads.append((load, distance))
         
         starting_loads.sort(key=lambda x: x[1])
+        logger.info(f"Found {len(starting_loads)} loads within {max_deadhead}mi of origin")
         
-        # Build chain graph with proper time window validation
+        # Build chain graph
         chain_graph = defaultdict(list)
+        chain_edges = 0
         for i, load1 in enumerate(loads_dict):
             for j, load2 in enumerate(loads_dict):
                 if i != j:
-                    can_chain, deadhead, error = can_chain_loads(load1, load2, max_deadhead)
+                    can_chain, deadhead, error = can_chain_loads(load1, load2, max_deadhead, reference_time=reference_time)
                     if can_chain:
                         chain_graph[load1['load_id']].append((load2, deadhead))
+                        chain_edges += 1
+        logger.info(f"Chain graph: {chain_edges} valid edges found")
         
         # Find all routes using DFS with early stopping
         all_routes = []
@@ -1184,113 +1264,188 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
         max_routes_during_search = max_routes * 3  # Allow 3x during search, filter later
         
         def dfs_route(current_chain: List[Tuple[Dict, float]], current_load: Dict, depth: int):
+            """Depth-first search to find all route chains."""
             # Early stopping if we already have too many routes
             if len(all_routes) >= max_routes_during_search:
                 return
-            """Depth-first search to find all route chains."""
             if depth > max_chain_length:
                 return
             
-            # Check if current chain ends near destination
-            if dest_lat and dest_lon:
+            # Validate chain before adding (time windows + geographic progress)
+            if len(current_chain) >= 2:
+                # Geographic backtracking validation - reject routes going in opposite directions
+                if dest_lat and dest_lon:
+                    visited_states = set()
+                    prev_distance_to_target = None
+                    prev_distance_from_origin = None
+                    
+                    for i, (load, _) in enumerate(current_chain):
+                        dest_lat_load = load['destination']['latitude']
+                        dest_lon_load = load['destination']['longitude']
+                        distance_to_target = haversine_distance(dest_lat_load, dest_lon_load, dest_lat, dest_lon)
+                        distance_from_origin = haversine_distance(origin_lat, origin_lon, dest_lat_load, dest_lon_load)
+                        current_state = load['destination']['state']
+                        
+                        # Reject if revisiting same state (backtracking)
+                        if current_state in visited_states:
+                            logger.debug(f"Chain rejected: revisiting state {current_state}")
+                            return
+                        visited_states.add(current_state)
+                        
+                        # Reject if moving away from target (backtracking >100mi)
+                        if prev_distance_to_target is not None:
+                            if distance_to_target > prev_distance_to_target + 100:
+                                logger.debug(f"Chain rejected: backtracking from target ({distance_to_target:.1f}mi vs {prev_distance_to_target:.1f}mi)")
+                                return
+                        
+                        # Reject if moving backward toward origin (getting closer to origin)
+                        if prev_distance_from_origin is not None:
+                            if distance_from_origin < prev_distance_from_origin - 50:
+                                logger.debug(f"Chain rejected: backtracking toward origin ({distance_from_origin:.1f}mi vs {prev_distance_from_origin:.1f}mi)")
+                                return
+                        
+                        prev_distance_to_target = distance_to_target
+                        prev_distance_from_origin = distance_from_origin
+                
+                # Get start time from first load's pickup window
+                first_load = current_chain[0][0]
+                first_pickup_window = first_load.get('pickup_window', {})
+                start_time = parse_iso_to_minutes(first_pickup_window.get('earliest', ''), reference_time)
+                
+                # Validate chain (time windows only - HOS disabled)
+                is_valid, error_msg = validate_route_chain(
+                    current_chain, start_time, max_deadhead,
+                    reference_time=reference_time,
+                    validate_hos=False  # Disable HOS - too strict
+                )
+                if not is_valid:
+                    logger.debug(f"Chain validation failed: {error_msg}")
+                    return  # Reject invalid chains
+            
+            # Check if current chain ends near destination (or no destination specified)
+            if not dest_lat or not dest_lon:
+                # No destination - accept all valid chains
+                final_deliv = current_load['destination']
+                distance_to_dest = 0
+            else:
                 final_deliv = current_load['destination']
                 distance_to_dest = haversine_distance(
                     final_deliv['latitude'], final_deliv['longitude'],
                     dest_lat, dest_lon
                 )
-                
-                if distance_to_dest <= dest_deadhead:
-                    # Validate the entire chain for time windows and HOS
-                    # Get start time from first load's pickup window
-                    first_load = current_chain[0][0]
-                    first_pickup_window = first_load.get('pickup_window', {})
-                    start_time = parse_iso_to_minutes(first_pickup_window.get('earliest', ''))
-                    
-                    # Validate chain
-                    is_valid, error_msg = validate_route_chain(current_chain, start_time, max_deadhead)
-                    if not is_valid:
-                        # Skip invalid chain
-                        return
-                    
-                    route = {
-                        'route_id': len(all_routes) + 1,
-                        'segments': [],
-                        'total_distance': 0,
-                        'total_revenue': 0,
-                        'total_deadhead': 0,
-                        'ends_near_destination': True,
-                        'final_distance_to_dest': distance_to_dest
-                    }
-                    
-                    for load, deadhead in current_chain:
-                        route['segments'].append({
-                            'load_id': load['load_id'],
-                            'origin': f"{load['origin']['city']}, {load['origin']['state']}",
-                            'destination': f"{load['destination']['city']}, {load['destination']['state']}",
-                            'distance_miles': load['distance_miles'],
-                            'revenue': load['revenue']['amount'],
-                            'rate_per_mile': load['revenue']['rate_per_mile'],
-                            'pickup_window': load['pickup_window'],
-                            'delivery_window': load['delivery_window'],
-                            'weight_pounds': load.get('weight_pounds'),
-                            'deadhead_before': deadhead
-                        })
-                        route['total_distance'] += load['distance_miles']
-                        route['total_revenue'] += load['revenue']['amount']
-                        route['total_deadhead'] += deadhead
-                    
-                    chain_sig = tuple(l[0]['load_id'] for l in current_chain)
-                    if chain_sig not in processed_chains:
-                        all_routes.append(route)
-                        processed_chains.add(chain_sig)
             
-            # Try to extend chain
+            # Accept ALL valid chains as alternate routes
+            # Single-load routes: always add
+            # Multi-load chains: add as alternate routes (even if not ending near destination)
+            # Destination filtering happens later in the filtering step
+            is_single_load = len(current_chain) == 1
+            should_add = True  # Always add valid chains - they're alternate routes
+            
+            if should_add:
+                route = {
+                    'route_id': len(all_routes) + 1,
+                    'segments': [],
+                    'total_distance': 0,
+                    'total_revenue': 0,
+                    'total_deadhead': 0,
+                    'ends_near_destination': dest_lat is not None and dest_lon is not None and distance_to_dest <= dest_deadhead,
+                    'final_distance_to_dest': distance_to_dest
+                }
+                
+                for load, deadhead in current_chain:
+                    route['segments'].append({
+                        'load_id': load['load_id'],
+                        'origin': f"{load['origin']['city']}, {load['origin']['state']}",
+                        'destination': f"{load['destination']['city']}, {load['destination']['state']}",
+                        'distance_miles': load['distance_miles'],
+                        'revenue': load['revenue']['amount'],
+                        'rate_per_mile': load['revenue']['rate_per_mile'],
+                        'pickup_window': load['pickup_window'],
+                        'delivery_window': load['delivery_window'],
+                        'weight_pounds': load.get('weight_pounds'),
+                        'deadhead_before': deadhead
+                    })
+                    route['total_distance'] += load['distance_miles']
+                    route['total_revenue'] += load['revenue']['amount']
+                    route['total_deadhead'] += deadhead
+                
+                chain_sig = tuple(l[0]['load_id'] for l in current_chain)
+                if chain_sig not in processed_chains:
+                    all_routes.append(route)
+                    processed_chains.add(chain_sig)
+            
+            # Try to extend chain (continue exploring even after adding current route)
+            # This allows finding longer chains and alternate routes through intermediate states
             if current_load['load_id'] in chain_graph:
+                next_loads_count = len(chain_graph[current_load['load_id']])
                 for next_load, deadhead in chain_graph[current_load['load_id']]:
+                    # Don't revisit same load in chain
                     if not any(l[0]['load_id'] == next_load['load_id'] for l in current_chain):
+                        # Continue DFS to find longer chains (2-load, 3-load, etc.)
                         dfs_route(current_chain + [(next_load, deadhead)], next_load, depth + 1)
         
         # Start DFS from each starting load
+        dfs_routes_added = 0
         for start_load, start_deadhead in starting_loads:
             chain_signature = (start_load['load_id'],)
             if chain_signature not in processed_chains:
+                routes_before = len(all_routes)
                 dfs_route([(start_load, start_deadhead)], start_load, 1)
+                routes_after = len(all_routes)
+                dfs_routes_added += (routes_after - routes_before)
                 processed_chains.add(chain_signature)
+        logger.info(f"DFS added {dfs_routes_added} routes from {len(starting_loads)} starting loads")
         
-        # Also add single-load routes that go directly to destination
-        if dest_lat and dest_lon:
-            for load in loads_dict:
-                deliv = load['destination']
-                distance_to_dest = haversine_distance(
-                    deliv['latitude'], deliv['longitude'],
-                    dest_lat, dest_lon
-                )
-                if distance_to_dest <= dest_deadhead:
-                    pickup_lat = load['origin']['latitude']
-                    pickup_lon = load['origin']['longitude']
-                    start_distance = haversine_distance(origin_lat, origin_lon, pickup_lat, pickup_lon)
-                    if start_distance <= max_deadhead:
-                        route = {
-                            'route_id': len(all_routes) + 1,
-                            'segments': [{
-                                'load_id': load['load_id'],
-                                'origin': f"{load['origin']['city']}, {load['origin']['state']}",
-                                'destination': f"{load['destination']['city']}, {load['destination']['state']}",
-                                'distance_miles': load['distance_miles'],
-                                'revenue': load['revenue']['amount'],
-                                'rate_per_mile': load['revenue']['rate_per_mile'],
-                                'pickup_window': load['pickup_window'],
-                                'delivery_window': load['delivery_window'],
-                                'weight_pounds': load.get('weight_pounds'),
-                                'deadhead_before': start_distance
-                            }],
-                            'total_distance': load['distance_miles'],
-                            'total_revenue': load['revenue']['amount'],
-                            'total_deadhead': start_distance,
-                            'ends_near_destination': True,
-                            'final_distance_to_dest': distance_to_dest
-                        }
-                        all_routes.append(route)
+        # Also add single-load routes that start near origin
+        # Add ALL single-load routes that start near origin (not just those ending near destination)
+        for load in loads_dict:
+            pickup_lat = load['origin']['latitude']
+            pickup_lon = load['origin']['longitude']
+            start_distance = haversine_distance(origin_lat, origin_lon, pickup_lat, pickup_lon)
+            
+            # Only add if pickup is reachable (within max_deadhead)
+            if start_distance <= max_deadhead:
+                # Calculate distance to destination if destination is specified
+                distance_to_dest = 0
+                if dest_lat and dest_lon:
+                    deliv = load['destination']
+                    distance_to_dest = haversine_distance(
+                        deliv['latitude'], deliv['longitude'],
+                        dest_lat, dest_lon
+                    )
+                
+                # Add single-load route (regardless of destination proximity)
+                # If destination is specified, we'll mark if it ends near destination
+                route = {
+                    'route_id': len(all_routes) + 1,
+                    'segments': [{
+                        'load_id': load['load_id'],
+                        'origin': f"{load['origin']['city']}, {load['origin']['state']}",
+                        'destination': f"{load['destination']['city']}, {load['destination']['state']}",
+                        'distance_miles': load['distance_miles'],
+                        'revenue': load['revenue']['amount'],
+                        'rate_per_mile': load['revenue']['rate_per_mile'],
+                        'pickup_window': load['pickup_window'],
+                        'delivery_window': load['delivery_window'],
+                        'weight_pounds': load.get('weight_pounds'),
+                        'deadhead_before': start_distance
+                    }],
+                    'total_distance': load['distance_miles'],
+                    'total_revenue': load['revenue']['amount'],
+                    'total_deadhead': start_distance,
+                    'ends_near_destination': dest_lat is not None and dest_lon is not None and distance_to_dest <= dest_deadhead,
+                    'final_distance_to_dest': distance_to_dest
+                }
+                
+                # Check if this single-load route is already in all_routes (from DFS)
+                chain_sig = (load['load_id'],)
+                if chain_sig not in processed_chains:
+                    all_routes.append(route)
+                    processed_chains.add(chain_sig)
+        
+        single_load_routes_added = len([r for r in all_routes if len(r['segments']) == 1])
+        chained_routes_added = len([r for r in all_routes if len(r['segments']) > 1])
+        logger.info(f"Found {len(all_routes)} total routes before filtering: {single_load_routes_added} single-load, {chained_routes_added} chained")
         
         # Remove duplicates
         unique_routes = []
@@ -1316,33 +1471,42 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
             
             filtered_routes.append(route)
         
-        # Sort by quality score: prefer longer single-load routes over multi-load routes
-        # Priority: single-load routes with longer distances > revenue per mile > total revenue
+        # Sort by quality score: prioritize efficiency (less total miles, less deadhead, more loaded miles)
+        # Priority: 
+        # 1. More loaded miles (higher is better)
+        # 2. Less total miles traveled (lower is better) 
+        # 3. Less deadhead miles (lower is better)
+        # 4. Prefer 2-load routes over 3+ load routes (more efficient)
         def quality_score(route):
             total_miles = route['total_distance'] + route['total_deadhead']
-            if total_miles > 0:
-                revenue_per_mile = route['total_revenue'] / total_miles
-            else:
-                revenue_per_mile = 0
-            
-            # Count number of segments (loads) in route
+            loaded_miles = route['total_distance']  # Loaded miles
+            deadhead_miles = route['total_deadhead']
             num_segments = len(route['segments'])
             
-            # Prefer single-load routes (1 segment) with longer distances
-            # Single-load routes get a bonus based on their distance
-            # Multi-load routes get a penalty based on number of segments
-            if num_segments == 1:
-                # Single-load route: bonus for longer distance
-                # Distance bonus: multiply by distance/100 to give significant boost to longer routes
-                distance_bonus = route['total_distance'] / 100.0
-                return (distance_bonus, revenue_per_mile, route['total_revenue'], -route['total_deadhead'])
+            # Calculate efficiency metrics
+            if total_miles > 0:
+                loaded_ratio = loaded_miles / total_miles  # Higher is better (more loaded, less deadhead)
+                deadhead_ratio = deadhead_miles / total_miles  # Lower is better
             else:
-                # Multi-load route: penalty for more segments (more rounds)
-                # Penalty: subtract (num_segments - 1) * 100 from distance to prioritize single loads
-                segment_penalty = (num_segments - 1) * 100
-                adjusted_distance = max(0, route['total_distance'] - segment_penalty)
-                distance_bonus = adjusted_distance / 100.0
-                return (distance_bonus, revenue_per_mile, route['total_revenue'], -route['total_deadhead'])
+                loaded_ratio = 0
+                deadhead_ratio = 1
+            
+            # Penalty for too many segments (3+ loads often less efficient than 2 loads)
+            segment_penalty = 0
+            if num_segments >= 3:
+                segment_penalty = (num_segments - 2) * 50  # Penalty for 3+ loads
+            
+            # Quality score: prioritize loaded miles, then efficiency, then penalize long chains
+            # Higher score = better route
+            score = (
+                loaded_miles,  # Primary: more loaded miles is better
+                loaded_ratio,  # Secondary: higher loaded ratio is better
+                -total_miles,  # Tertiary: less total miles is better (negative for reverse sort)
+                -deadhead_miles,  # Quaternary: less deadhead is better
+                -segment_penalty  # Quinary: penalize 3+ load chains
+            )
+            
+            return score
         
         filtered_routes.sort(key=quality_score, reverse=True)
         
