@@ -764,8 +764,21 @@ def parse_iso_to_minutes(iso_string: str) -> int:
         return 0
 
 
-def can_chain_loads(load1: Dict, load2: Dict, max_deadhead: float = 100) -> Tuple[bool, float]:
-    """Check if load2 can be chained after load1. Returns (can_chain, deadhead_miles)."""
+def calculate_travel_time_miles(miles: float, speed_mph: float = 50.0) -> int:
+    """Calculate travel time in minutes for given miles at speed."""
+    return int((miles / speed_mph) * 60)
+
+
+def can_chain_loads(load1: Dict, load2: Dict, max_deadhead: float = 100, 
+                    unload_buffer_minutes: int = 60) -> Tuple[bool, float, Optional[str]]:
+    """
+    Check if load2 can be chained after load1 with proper time window validation.
+    
+    Must satisfy: Delivery_i_time + unload_buffer + travel_time(deadhead) ≤ Pickup_{i+1}_latest
+    And truck must be available at Pickup_{i+1}_earliest (can wait if early)
+    
+    Returns: (can_chain, deadhead_miles, error_message)
+    """
     deliv1 = load1['destination']
     pickup2 = load2['origin']
     
@@ -775,30 +788,179 @@ def can_chain_loads(load1: Dict, load2: Dict, max_deadhead: float = 100) -> Tupl
     )
     
     if deadhead > max_deadhead:
-        return False, deadhead
+        return False, deadhead, f"Deadhead {deadhead:.1f} miles exceeds max {max_deadhead} miles"
     
     # Check time windows - use snake_case keys (delivery_window, pickup_window)
     delivery_window = load1.get('delivery_window', {})
     pickup_window = load2.get('pickup_window', {})
     
     if not delivery_window or not pickup_window:
-        return False, deadhead
+        return False, deadhead, "Missing time windows"
     
     load1_delivery_earliest = parse_iso_to_minutes(delivery_window.get('earliest', ''))
     load1_delivery_latest = parse_iso_to_minutes(delivery_window.get('latest', ''))
     load2_pickup_earliest = parse_iso_to_minutes(pickup_window.get('earliest', ''))
     load2_pickup_latest = parse_iso_to_minutes(pickup_window.get('latest', ''))
     
-    deadhead_time = max(30, int((deadhead / 50) * 60))
-    buffer_time = 1440 * 5  # 5 days buffer
+    # Validate parsed times
+    if load1_delivery_latest == 0 or load2_pickup_latest == 0:
+        return False, deadhead, "Invalid time window format"
     
-    if load1_delivery_latest + deadhead_time > load2_pickup_latest + buffer_time:
-        return False, deadhead
+    # Calculate deadhead travel time (minutes)
+    deadhead_travel_time = calculate_travel_time_miles(deadhead)
     
-    if load1_delivery_earliest + deadhead_time > load2_pickup_latest + buffer_time + 1440:
-        return False, deadhead
+    # Key constraint: Delivery_i_time + unload_buffer + travel_time(deadhead) ≤ Pickup_{i+1}_latest
+    # We use the latest delivery time (worst case) to ensure feasibility
+    earliest_arrival_at_load2 = load1_delivery_latest + unload_buffer_minutes + deadhead_travel_time
     
-    return True, deadhead
+    if earliest_arrival_at_load2 > load2_pickup_latest:
+        return False, deadhead, f"Time window violation: cannot reach load2 pickup by latest time ({load2_pickup_latest} min) after delivering load1 at {load1_delivery_latest} min"
+    
+    # Check if truck can be available at Pickup_{i+1}_earliest (can wait if early)
+    # If we arrive too early, we can wait, but we must arrive by latest
+    # This is already satisfied by the check above
+    
+    return True, deadhead, None
+
+
+def validate_hos_for_chain(chain: List[Tuple[Dict, float]], 
+                           start_time_minutes: int = 0,
+                           max_driving_hours: float = 11.0,
+                           max_on_duty_hours: float = 14.0,
+                           required_rest_hours: float = 10.0) -> Tuple[bool, Optional[str]]:
+    """
+    Validate Hours of Service (HOS) for a route chain.
+    
+    DOT HOS Rules (simplified):
+    - Max 11 hours driving after 10 consecutive hours off duty
+    - Max 14 hours on-duty (driving + other work) after coming on duty
+    - Must take 10-hour rest break after 11 hours driving or 14 hours on-duty
+    
+    Returns: (is_valid, error_message)
+    """
+    if not chain:
+        return True, None
+    
+    current_time = start_time_minutes
+    total_driving_minutes = 0
+    total_on_duty_minutes = 0
+    consecutive_driving_minutes = 0
+    
+    max_driving_minutes = int(max_driving_hours * 60)
+    max_on_duty_minutes = int(max_on_duty_hours * 60)
+    required_rest_minutes = int(required_rest_hours * 60)
+    
+    for i, (load, deadhead_before) in enumerate(chain):
+        # Parse time windows
+        pickup_window = load.get('pickup_window', {})
+        delivery_window = load.get('delivery_window', {})
+        
+        if not pickup_window or not delivery_window:
+            return False, f"Load {i+1} missing time windows"
+        
+        pickup_earliest = parse_iso_to_minutes(pickup_window.get('earliest', ''))
+        pickup_latest = parse_iso_to_minutes(pickup_window.get('latest', ''))
+        delivery_earliest = parse_iso_to_minutes(delivery_window.get('earliest', ''))
+        delivery_latest = parse_iso_to_minutes(delivery_window.get('latest', ''))
+        
+        if pickup_latest == 0 or delivery_latest == 0:
+            return False, f"Load {i+1} has invalid time windows"
+        
+        # Deadhead to pickup (driving time)
+        deadhead_time = calculate_travel_time_miles(deadhead_before)
+        total_driving_minutes += deadhead_time
+        consecutive_driving_minutes += deadhead_time
+        total_on_duty_minutes += deadhead_time
+        
+        # Arrive at pickup (wait if early, but must arrive by latest)
+        arrival_at_pickup = max(current_time + deadhead_time, pickup_earliest)
+        if arrival_at_pickup > pickup_latest:
+            return False, f"Load {i+1}: Cannot reach pickup by latest time (HOS constraint)"
+        
+        # Load/unload time (on-duty but not driving) - estimate 60 minutes
+        load_time = 60
+        total_on_duty_minutes += load_time
+        
+        # Travel with load (driving time)
+        load_distance = load.get('distance_miles', 0)
+        load_travel_time = calculate_travel_time_miles(load_distance)
+        total_driving_minutes += load_travel_time
+        consecutive_driving_minutes += load_travel_time
+        total_on_duty_minutes += load_travel_time
+        
+        # Arrive at delivery
+        arrival_at_delivery = arrival_at_pickup + load_time + load_travel_time
+        if arrival_at_delivery > delivery_latest:
+            return False, f"Load {i+1}: Cannot deliver by latest time (HOS constraint)"
+        
+        # Unload time (on-duty but not driving) - estimate 60 minutes
+        unload_time = 60
+        total_on_duty_minutes += unload_time
+        
+        current_time = arrival_at_delivery + unload_time
+        
+        # Check HOS limits
+        if consecutive_driving_minutes > max_driving_minutes:
+            # Need rest break
+            current_time += required_rest_minutes
+            consecutive_driving_minutes = 0
+            total_on_duty_minutes += required_rest_minutes
+        
+        if total_on_duty_minutes > max_on_duty_minutes:
+            # Need rest break
+            current_time += required_rest_minutes
+            consecutive_driving_minutes = 0
+            total_on_duty_minutes = required_rest_minutes  # Reset after rest
+        
+        # If this is not the last load, check if we can continue
+        if i < len(chain) - 1:
+            # Check if we have enough time to reach next pickup
+            next_load = chain[i + 1][0]
+            next_pickup_window = next_load.get('pickup_window', {})
+            next_pickup_latest = parse_iso_to_minutes(next_pickup_window.get('latest', ''))
+            
+            if next_pickup_latest == 0:
+                return False, f"Next load has invalid pickup window"
+            
+            # This will be checked in can_chain_loads, but we verify HOS allows it
+            if current_time > next_pickup_latest:
+                return False, f"Cannot reach next load pickup in time due to HOS constraints"
+    
+    return True, None
+
+
+def validate_route_chain(chain: List[Tuple[Dict, float]], 
+                         start_time_minutes: int = 0,
+                         max_deadhead: float = 100,
+                         unload_buffer_minutes: int = 60) -> Tuple[bool, Optional[str]]:
+    """
+    Validate an entire route chain for time windows and HOS constraints.
+    
+    For each hop (Load i → Load i+1), checks:
+    - Delivery_i_time + unload_buffer + travel_time(deadhead) ≤ Pickup_{i+1}_latest
+    - Truck can be available at Pickup_{i+1}_earliest (can wait if early)
+    - HOS feasibility: don't exceed driving limits; include rest resets
+    
+    Returns: (is_valid, error_message)
+    """
+    if len(chain) <= 1:
+        return True, None  # Single load is always valid
+    
+    # Validate each consecutive pair
+    for i in range(len(chain) - 1):
+        load1 = chain[i][0]
+        load2 = chain[i + 1][0]
+        
+        can_chain, deadhead, error = can_chain_loads(load1, load2, max_deadhead, unload_buffer_minutes)
+        if not can_chain:
+            return False, f"Load {i+1} → Load {i+2}: {error}"
+    
+    # Validate HOS for entire chain
+    hos_valid, hos_error = validate_hos_for_chain(chain, start_time_minutes)
+    if not hos_valid:
+        return False, f"HOS violation: {hos_error}"
+    
+    return True, None
 
 
 def generate_trip_plan_with_gemini(route: RouteOption, search_criteria: Dict[str, Any]) -> Optional[TripPlanDetail]:
@@ -1007,12 +1169,12 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
         
         starting_loads.sort(key=lambda x: x[1])
         
-        # Build chain graph
+        # Build chain graph with proper time window validation
         chain_graph = defaultdict(list)
         for i, load1 in enumerate(loads_dict):
             for j, load2 in enumerate(loads_dict):
                 if i != j:
-                    can_chain, deadhead = can_chain_loads(load1, load2, max_deadhead)
+                    can_chain, deadhead, error = can_chain_loads(load1, load2, max_deadhead)
                     if can_chain:
                         chain_graph[load1['load_id']].append((load2, deadhead))
         
@@ -1038,6 +1200,18 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
                 )
                 
                 if distance_to_dest <= dest_deadhead:
+                    # Validate the entire chain for time windows and HOS
+                    # Get start time from first load's pickup window
+                    first_load = current_chain[0][0]
+                    first_pickup_window = first_load.get('pickup_window', {})
+                    start_time = parse_iso_to_minutes(first_pickup_window.get('earliest', ''))
+                    
+                    # Validate chain
+                    is_valid, error_msg = validate_route_chain(current_chain, start_time, max_deadhead)
+                    if not is_valid:
+                        # Skip invalid chain
+                        return
+                    
                     route = {
                         'route_id': len(all_routes) + 1,
                         'segments': [],
