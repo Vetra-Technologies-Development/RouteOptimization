@@ -63,7 +63,7 @@ Find all possible route chains from origin to destination.
 
 **Query Parameters:**
 - `page` (int, default: 1): Page number
-- `page_size` (int, default: 50): Number of routes per page (max 200)
+- `page_size` (int, default: 10): Number of routes per page (max 200)
 - `include_trip_plans` (bool, default: false): Generate detailed trip plans with Gemini AI
 
 **Request Body:**

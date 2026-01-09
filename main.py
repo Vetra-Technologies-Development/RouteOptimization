@@ -1142,14 +1142,33 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
             
             filtered_routes.append(route)
         
-        # Sort by quality score: revenue per mile (highest first), then by total revenue
+        # Sort by quality score: prefer longer single-load routes over multi-load routes
+        # Priority: single-load routes with longer distances > revenue per mile > total revenue
         def quality_score(route):
             total_miles = route['total_distance'] + route['total_deadhead']
             if total_miles > 0:
                 revenue_per_mile = route['total_revenue'] / total_miles
             else:
                 revenue_per_mile = 0
-            return (revenue_per_mile, route['total_revenue'], -route['total_deadhead'])
+            
+            # Count number of segments (loads) in route
+            num_segments = len(route['segments'])
+            
+            # Prefer single-load routes (1 segment) with longer distances
+            # Single-load routes get a bonus based on their distance
+            # Multi-load routes get a penalty based on number of segments
+            if num_segments == 1:
+                # Single-load route: bonus for longer distance
+                # Distance bonus: multiply by distance/100 to give significant boost to longer routes
+                distance_bonus = route['total_distance'] / 100.0
+                return (distance_bonus, revenue_per_mile, route['total_revenue'], -route['total_deadhead'])
+            else:
+                # Multi-load route: penalty for more segments (more rounds)
+                # Penalty: subtract (num_segments - 1) * 100 from distance to prioritize single loads
+                segment_penalty = (num_segments - 1) * 100
+                adjusted_distance = max(0, route['total_distance'] - segment_penalty)
+                distance_bonus = adjusted_distance / 100.0
+                return (distance_bonus, revenue_per_mile, route['total_revenue'], -route['total_deadhead'])
         
         filtered_routes.sort(key=quality_score, reverse=True)
         
@@ -1232,7 +1251,7 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
 @app.post("/get_all_routes", response_model=AllRoutesResponse)
 async def get_all_routes(request: AllRoutesRequest, include_trip_plans: bool = False, 
                          page: int = Query(1, ge=1, description="Page number (starts at 1)"),
-                         page_size: int = Query(50, ge=1, le=200, description="Number of routes per page (max 200)")):
+                         page_size: int = Query(10, ge=1, le=200, description="Number of routes per page (max 200)")):
     """
     Get all possible route chains from search criteria origin to destination.
     
@@ -1243,7 +1262,7 @@ async def get_all_routes(request: AllRoutesRequest, include_trip_plans: bool = F
         request: The route request with searchCriteria and loads
         include_trip_plans: If True, generate detailed trip plans using Gemini AI (requires GEMINI_API_KEY)
         page: Page number (starts at 1, default: 1)
-        page_size: Number of routes per page (default: 50, max: 200)
+        page_size: Number of routes per page (default: 10, max: 200)
     
     Note:
         - Deadhead miles are only increased if initial search returns 0 routes
@@ -1263,7 +1282,7 @@ async def get_all_routes(request: AllRoutesRequest, include_trip_plans: bool = F
             logger.warning("Request rejected: No origin in search criteria")
             raise HTTPException(status_code=400, detail="Search criteria must include origin")
         
-        # Get max routes limit from options (default: 200 total, 50 per page)
+        # Get max routes limit from options (default: 200 total, 10 per page)
         max_total_routes = 200  # Maximum total routes to find
         min_revenue = 0
         max_deadhead_ratio = 0.6  # Increased from 0.5 to 0.6 to allow more routes (deadhead can be up to 60%)
@@ -1406,7 +1425,11 @@ async def get_all_routes(request: AllRoutesRequest, include_trip_plans: bool = F
                 'page_size': page_size,
                 'total_pages': total_pages,
                 'total_routes': total_routes_found,
-                'routes_on_page': len(route_options)
+                'routes_on_page': len(route_options),
+                'has_next_page': page < total_pages,
+                'has_previous_page': page > 1,
+                'next_page': page + 1 if page < total_pages else None,
+                'previous_page': page - 1 if page > 1 else None
             }
         )
         
