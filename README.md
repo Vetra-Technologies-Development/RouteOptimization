@@ -93,9 +93,6 @@ Find all possible route chains from origin to destination.
 }
 ```
 
-### POST `/solve_routes` (Optional - requires ortools)
-
-Solve vehicle routing problem with time windows using OR-Tools.
 
 
 
