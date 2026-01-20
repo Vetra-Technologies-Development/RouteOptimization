@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Vetra LoadBoard Network Dashboard</title>
+    <title>Vetra LoadBoard Network Dashbaord</title>
+    <link rel="icon" href="{{LOGO_URL}}" />
     <style>
       :root {
         --bg: #f5f7fb;
@@ -126,6 +127,10 @@
       .small-card button {
         padding: 6px 10px;
       }
+      button[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
     </style>
   </head>
   <body>
@@ -167,6 +172,11 @@
               <strong id="countValue">0</strong>
               <button id="countBtn">Refresh</button>
             </div>
+            <div class="small-card">
+              <button id="prevPageBtn">Prev</button>
+              <span id="pageInfo">Page 1 of 1</span>
+              <button id="nextPageBtn">Next</button>
+            </div>
           </div>
           <table>
             <thead>
@@ -189,6 +199,10 @@
 
     <script>
       const baseUrl = "{{BASE_URL}}";
+      const pageSize = 20;
+      let currentPage = 1;
+      let totalCount = 0;
+      let totalPages = 1;
 
       async function requestJson(path, options) {
         const response = await fetch(baseUrl + path, options);
@@ -219,11 +233,19 @@
         document.getElementById("postResult").textContent = "Result will appear here.";
       });
 
-      document.getElementById("getBtn").addEventListener("click", async () => {
-        const result = await requestJson("/loadboard/simple");
+      async function fetchLoads(page) {
+        const safePage = Math.max(1, page || 1);
+        const offset = (safePage - 1) * pageSize;
+        const result = await requestJson(`/loadboard/simple?limit=${pageSize}&offset=${offset}`);
         const body = document.getElementById("loadTableBody");
         body.innerHTML = "";
         const rows = (result && result.data && result.data.loads) ? result.data.loads : [];
+        totalCount = (result && result.data && typeof result.data.count === "number")
+          ? result.data.count
+          : totalCount;
+        totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+        currentPage = Math.min(safePage, totalPages);
+        updatePaginationUi();
         rows.forEach((load) => {
           const tr = document.createElement("tr");
           const origin = [load.origin_city, load.origin_state].filter(Boolean).join(", ");
@@ -244,6 +266,28 @@
           `;
           body.appendChild(tr);
         });
+      }
+
+      function updatePaginationUi() {
+        document.getElementById("pageInfo").textContent = `Page ${currentPage} of ${totalPages}`;
+        document.getElementById("prevPageBtn").disabled = currentPage <= 1;
+        document.getElementById("nextPageBtn").disabled = currentPage >= totalPages;
+      }
+
+      document.getElementById("getBtn").addEventListener("click", async () => {
+        await fetchLoads(currentPage);
+      });
+
+      document.getElementById("prevPageBtn").addEventListener("click", async () => {
+        if (currentPage > 1) {
+          await fetchLoads(currentPage - 1);
+        }
+      });
+
+      document.getElementById("nextPageBtn").addEventListener("click", async () => {
+        if (currentPage < totalPages) {
+          await fetchLoads(currentPage + 1);
+        }
       });
 
       document.getElementById("countBtn").addEventListener("click", async () => {
@@ -252,6 +296,14 @@
           ? result.data.count
           : "n/a";
         document.getElementById("countValue").textContent = count;
+        if (typeof count === "number") {
+          totalCount = count;
+          totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+          if (currentPage > totalPages) {
+            currentPage = totalPages;
+          }
+          updatePaginationUi();
+        }
       });
 
       document.getElementById("healthBtnTop").addEventListener("click", async () => {
@@ -259,6 +311,16 @@
         const statusText = result.ok ? "up" : "down";
         document.getElementById("healthStatusTop").textContent = "Status: " + statusText;
       });
+
+      async function loadInitialData() {
+        await Promise.all([
+          document.getElementById("getBtn").click(),
+          document.getElementById("countBtn").click(),
+          document.getElementById("healthBtnTop").click()
+        ]);
+      }
+
+      window.addEventListener("load", loadInitialData);
     </script>
   </body>
 </html>

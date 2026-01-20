@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Query, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from app.dependencies import get_loadboard_service, is_supabase_enabled
@@ -74,12 +74,21 @@ app = FastAPI(title="VRPTW Solver", description="Vehicle Routing Problem with Ti
 # Simple in-memory loadboard storage for HTML interface
 LOADBOARD_POSTS: List[Dict[str, Any]] = []
 LOADBOARD_UI_PATH = os.path.join(os.path.dirname(__file__), "loadboard.html")
-LOADBOARD_LOGO_PATH = "/public/Vetra%20Technologies%20Logo.png"
+LOADBOARD_LOGO_PATH = "/loadboard/logo"
 
 # Serve static assets
 public_dir = os.path.join(os.path.dirname(__file__), "public")
 if os.path.isdir(public_dir):
     app.mount("/public", StaticFiles(directory=public_dir), name="public")
+
+
+@app.get("/loadboard/logo")
+async def loadboard_logo():
+    """Serve the Vetra logo for the loadboard UI."""
+    logo_fs_path = os.path.join(public_dir, "Vetra Technologies Logo.png")
+    if not os.path.exists(logo_fs_path):
+        raise HTTPException(status_code=404, detail="Logo not found")
+    return FileResponse(logo_fs_path)
 
 # Add request/response logging middleware
 @app.middleware("http")
@@ -669,6 +678,35 @@ async def loadboard_health():
 @app.get("/loadboard/dashboard", response_class=HTMLResponse)
 async def loadboard_ui(request: Request):
     """Serve the simple loadboard HTML interface."""
+    ui_code = os.getenv("LOADBOARD_UI_CODE")
+    if ui_code:
+        provided_code = request.query_params.get("code")
+        if provided_code != ui_code:
+            html = """
+            <!doctype html>
+            <html lang="en">
+              <head>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <title>Unauthorized</title>
+                <style>
+                  body { font-family: "Segoe UI", Arial, sans-serif; background: #f5f7fb; margin: 0; }
+                  .card { max-width: 520px; margin: 80px auto; background: #fff; border: 1px solid #e5e7eb;
+                    border-radius: 12px; padding: 24px; text-align: center; }
+                  h1 { margin: 0 0 8px 0; font-size: 20px; }
+                  p { margin: 0; color: #6b7280; font-size: 14px; }
+                  code { background: #f3f4f6; padding: 2px 6px; border-radius: 6px; }
+                </style>
+              </head>
+              <body>
+                <div class="card">
+                  <h1>Unauthorized</h1>
+                  <p>Access requires a valid code. Please check the URL and include <code>?code=YOUR_CODE</code>.</p>
+                </div>
+              </body>
+            </html>
+            """
+            return HTMLResponse(content=html, status_code=401)
     if not os.path.exists(LOADBOARD_UI_PATH):
         raise HTTPException(status_code=404, detail="Loadboard UI not found")
     with open(LOADBOARD_UI_PATH, "r", encoding="utf-8") as handle:
@@ -713,10 +751,11 @@ async def post_loadboard_load(request: Request):
 
 
 @app.get("/loadboard/simple")
-async def get_loadboard_loads(limit: int = 50):
+async def get_loadboard_loads(limit: int = 50, offset: int = 0):
     """Get posted loads (Supabase if configured, otherwise in-memory)."""
     if SUPABASE_ENABLED and supabase_client:
         try:
+            end_index = max(offset, 0) + max(limit, 1) - 1
             result = (
                 supabase_client.table("loadboard_loads")
                 .select(
@@ -726,7 +765,7 @@ async def get_loadboard_loads(limit: int = 50):
                     count="exact"
                 )
                 .order("updated_at", desc=True)
-                .limit(limit)
+                .range(max(offset, 0), end_index)
                 .execute()
             )
             count = result.count if hasattr(result, "count") else None
@@ -735,7 +774,9 @@ async def get_loadboard_loads(limit: int = 50):
             return {"count": count or 0, "loads": result.data or [], "source": "supabase"}
         except Exception as e:
             logger.error(f"Supabase fetch failed, falling back to memory: {e}", exc_info=True)
-    return {"count": len(LOADBOARD_POSTS), "loads": LOADBOARD_POSTS, "source": "memory"}
+    start = max(offset, 0)
+    end = start + max(limit, 1)
+    return {"count": len(LOADBOARD_POSTS), "loads": LOADBOARD_POSTS[start:end], "source": "memory"}
 
 
 @app.get("/loadboard/count")
