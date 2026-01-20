@@ -85,10 +85,16 @@ if os.path.isdir(public_dir):
 @app.get("/loadboard/logo")
 async def loadboard_logo():
     """Serve the Vetra logo for the loadboard UI."""
-    logo_fs_path = os.path.join(public_dir, "Vetra Technologies Logo.png")
-    if not os.path.exists(logo_fs_path):
-        raise HTTPException(status_code=404, detail="Logo not found")
-    return FileResponse(logo_fs_path)
+    logo_filename = "Vetra Technologies Logo.png"
+    candidate_paths = [
+        os.path.join(public_dir, logo_filename),
+        os.path.join(os.getcwd(), "public", logo_filename),
+        os.path.join(os.path.dirname(__file__), "public", logo_filename),
+    ]
+    for path in candidate_paths:
+        if os.path.exists(path):
+            return FileResponse(path)
+    raise HTTPException(status_code=404, detail="Logo not found")
 
 # Add request/response logging middleware
 @app.middleware("http")
