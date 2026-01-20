@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vetra LoadBoard Network Dashboard</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --text: #1b1f2a;
+        --muted: #6b7280;
+        --accent: #1f6feb;
+        --border: #e5e7eb;
+      }
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 28px;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+        justify-content: space-between;
+      }
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      header img {
+        height: 160px;
+        width: auto;
+      }
+      header .title {
+        font-size: 20px;
+        font-weight: 600;
+      }
+      header .subtitle {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      main { padding: 24px 28px; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+      .card h2 {
+        margin: 0 0 10px 0;
+        font-size: 16px;
+      }
+      .card p {
+        margin: 0 0 12px 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      label { font-size: 12px; color: var(--muted); }
+      textarea {
+        width: 100%;
+        min-height: 180px;
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+        background: #fafafa;
+      }
+      button {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: #0B1A36;
+        color: #fff;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: #fff;
+        color: var(--text);
+      }
+      pre {
+        background: #f9fafb;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        white-space: pre-wrap;
+        font-size: 12px;
+        color: #111827;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      th, td {
+        border-bottom: 1px solid var(--border);
+        padding: 8px;
+        text-align: left;
+        vertical-align: top;
+      }
+      th { color: var(--muted); font-weight: 600; }
+      details { cursor: pointer; }
+      .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+      .small-card {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 10px;
+        background: #f9fafb;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .small-card button {
+        padding: 6px 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-left">
+        <img src="{{LOGO_URL}}" alt="Vetra Technologies" />
+        <div>
+          <div class="title">Vetra - LoadBoard Network Dashboard</div>
+          <div class="subtitle">Third-party loadboard XML posting, load review, and health status</div>
+        </div>
+      </div>
+      <div class="row">
+        
+        <span id="healthStatusTop" class="subtitle">Status: unknown</span>
+        <button id="healthBtnTop">Health Check</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="grid">
+        <div class="card">
+          <h2>Post XML Payload</h2>
+          <p>Submit a LoadBoard Network XML payload.</p>
+          <label for="payload">XML Payload</label>
+          <textarea id="payload" placeholder="<LBNLoadPostings>...</LBNLoadPostings>"></textarea>
+          <div class="row">
+            <button id="postBtn">Post XML</button>
+            <button id="clearBtn" class="secondary">Clear</button>
+          </div>
+          <pre id="postResult">Result will appear here.</pre>
+        </div>
+
+        <div class="card">
+          <h2>Loadboard Feed</h2>
+          <div class="row">
+            <button id="getBtn">Get Loads</button>
+            <div class="small-card">
+              <span>Count:</span>
+              <strong id="countValue">0</strong>
+              <button id="countBtn">Refresh</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Tracking</th>
+                <th>User</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Rate</th>
+                <th>Updated</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="loadTableBody"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+
+    <script>
+      const baseUrl = "{{BASE_URL}}";
+
+      async function requestJson(path, options) {
+        const response = await fetch(baseUrl + path, options);
+        const text = await response.text();
+        try {
+          return { ok: response.ok, status: response.status, data: JSON.parse(text) };
+        } catch {
+          return { ok: response.ok, status: response.status, data: text };
+        }
+      }
+
+      document.getElementById("postBtn").addEventListener("click", async () => {
+        const payloadText = document.getElementById("payload").value.trim();
+        if (!payloadText) {
+          document.getElementById("postResult").textContent = "Enter XML payload first.";
+          return;
+        }
+        const result = await requestJson("/loadboard/simple", {
+          method: "POST",
+          headers: { "Content-Type": "application/xml" },
+          body: payloadText
+        });
+        document.getElementById("postResult").textContent = JSON.stringify(result, null, 2);
+      });
+
+      document.getElementById("clearBtn").addEventListener("click", () => {
+        document.getElementById("payload").value = "";
+        document.getElementById("postResult").textContent = "Result will appear here.";
+      });
+
+      document.getElementById("getBtn").addEventListener("click", async () => {
+        const result = await requestJson("/loadboard/simple");
+        const body = document.getElementById("loadTableBody");
+        body.innerHTML = "";
+        const rows = (result && result.data && result.data.loads) ? result.data.loads : [];
+        rows.forEach((load) => {
+          const tr = document.createElement("tr");
+          const origin = [load.origin_city, load.origin_state].filter(Boolean).join(", ");
+          const dest = [load.destination_city, load.destination_state].filter(Boolean).join(", ");
+          tr.innerHTML = `
+            <td>${load.tracking_number || ""}</td>
+            <td>${load.user_id || ""}</td>
+            <td>${origin}</td>
+            <td>${dest}</td>
+            <td>${load.rate || ""}</td>
+            <td>${load.updated_at || ""}</td>
+            <td>
+              <details>
+                <summary>Expand</summary>
+                <pre>${JSON.stringify(load, null, 2)}</pre>
+              </details>
+            </td>
+          `;
+          body.appendChild(tr);
+        });
+      });
+
+      document.getElementById("countBtn").addEventListener("click", async () => {
+        const result = await requestJson("/loadboard/count");
+        const count = result && result.data && typeof result.data.count === "number"
+          ? result.data.count
+          : "n/a";
+        document.getElementById("countValue").textContent = count;
+      });
+
+      document.getElementById("healthBtnTop").addEventListener("click", async () => {
+        const result = await requestJson("/loadboard/health");
+        const statusText = result.ok ? "up" : "down";
+        document.getElementById("healthStatusTop").textContent = "Status: " + statusText;
+      });
+    </script>
+  </body>
+</html>
+

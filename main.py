@@ -1,10 +1,15 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from app.dependencies import get_loadboard_service, is_supabase_enabled
+from app.routers.loadboard import extract_xml_content
 from typing import List, Optional, Dict, Any, Tuple
 import math
 import os
 import logging
+from uuid import uuid4
 from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 
@@ -65,6 +70,16 @@ except ImportError:
     Client = None
 
 app = FastAPI(title="VRPTW Solver", description="Vehicle Routing Problem with Time Windows Solver")
+
+# Simple in-memory loadboard storage for HTML interface
+LOADBOARD_POSTS: List[Dict[str, Any]] = []
+LOADBOARD_UI_PATH = os.path.join(os.path.dirname(__file__), "loadboard.html")
+LOADBOARD_LOGO_PATH = "/public/Vetra%20Technologies%20Logo.png"
+
+# Serve static assets
+public_dir = os.path.join(os.path.dirname(__file__), "public")
+if os.path.isdir(public_dir):
+    app.mount("/public", StaticFiles(directory=public_dir), name="public")
 
 # Add request/response logging middleware
 @app.middleware("http")
@@ -643,6 +658,99 @@ async def root():
 async def health():
     """Health check endpoint."""
     return {"status": "healthy"}
+
+
+@app.get("/loadboard/health")
+async def loadboard_health():
+    """Loadboard health check endpoint."""
+    return {"status": "ok"}
+
+
+@app.get("/loadboard/dashboard", response_class=HTMLResponse)
+async def loadboard_ui(request: Request):
+    """Serve the simple loadboard HTML interface."""
+    if not os.path.exists(LOADBOARD_UI_PATH):
+        raise HTTPException(status_code=404, detail="Loadboard UI not found")
+    with open(LOADBOARD_UI_PATH, "r", encoding="utf-8") as handle:
+        html = handle.read()
+    base_url = os.getenv("LOADBOARD_BASE_URL")
+    if not base_url:
+        base_url = str(request.base_url).rstrip("/")
+    html = html.replace("{{BASE_URL}}", base_url)
+    html = html.replace("{{LOGO_URL}}", LOADBOARD_LOGO_PATH)
+    return HTMLResponse(html)
+
+
+@app.post("/loadboard/simple")
+async def post_loadboard_load(request: Request):
+    """Post a load to the simple in-memory loadboard (accepts XML or JSON)."""
+    if is_supabase_enabled():
+        xml_content = await extract_xml_content(request)
+        loadboard_service = get_loadboard_service()
+        message, success_count = loadboard_service.process_xml_request(xml_content)
+        status = "ok" if success_count > 0 else "error"
+        return {"status": status, "message": message, "saved": success_count}
+
+    content_type = request.headers.get("content-type", "").lower()
+    body_bytes = await request.body()
+    body_str = body_bytes.decode("utf-8", errors="replace")
+    payload: Any
+    if "application/json" in content_type:
+        try:
+            payload = await request.json()
+        except Exception:
+            payload = body_str
+    else:
+        payload = body_str
+    item = {
+        "id": str(uuid4()),
+        "content_type": content_type or "text/plain",
+        "payload": payload,
+        "received_at": datetime.utcnow().isoformat() + "Z"
+    }
+    LOADBOARD_POSTS.append(item)
+    return {"status": "ok", "id": item["id"]}
+
+
+@app.get("/loadboard/simple")
+async def get_loadboard_loads(limit: int = 50):
+    """Get posted loads (Supabase if configured, otherwise in-memory)."""
+    if SUPABASE_ENABLED and supabase_client:
+        try:
+            result = (
+                supabase_client.table("loadboard_loads")
+                .select(
+                    "unique_id,tracking_number,user_id,origin_city,origin_state,"
+                    "destination_city,destination_state,origin_pickup_date,"
+                    "destination_delivery_date,rate,weight,created_at,updated_at",
+                    count="exact"
+                )
+                .order("updated_at", desc=True)
+                .limit(limit)
+                .execute()
+            )
+            count = result.count if hasattr(result, "count") else None
+            if count is None and isinstance(result.data, list):
+                count = len(result.data)
+            return {"count": count or 0, "loads": result.data or [], "source": "supabase"}
+        except Exception as e:
+            logger.error(f"Supabase fetch failed, falling back to memory: {e}", exc_info=True)
+    return {"count": len(LOADBOARD_POSTS), "loads": LOADBOARD_POSTS, "source": "memory"}
+
+
+@app.get("/loadboard/count")
+async def get_loadboard_count():
+    """Get total count of loads (Supabase if configured, otherwise in-memory)."""
+    if SUPABASE_ENABLED and supabase_client:
+        try:
+            result = supabase_client.table("loadboard_loads").select("unique_id", count="exact").execute()
+            count = result.count if hasattr(result, "count") else None
+            if count is None and isinstance(result.data, list):
+                count = len(result.data)
+            return {"count": count or 0, "source": "supabase"}
+        except Exception as e:
+            logger.error(f"Supabase count failed, falling back to memory: {e}", exc_info=True)
+    return {"count": len(LOADBOARD_POSTS), "source": "memory"}
 
 
 # Import LoadBoard router from new structure
@@ -1333,7 +1441,7 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
                     final_deliv['latitude'], final_deliv['longitude'],
                     dest_lat, dest_lon
                 )
-            
+                
             # Accept ALL valid chains as alternate routes
             # Single-load routes: always add
             # Multi-load chains: add as alternate routes (even if not ending near destination)
@@ -1342,37 +1450,37 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
             should_add = True  # Always add valid chains - they're alternate routes
             
             if should_add:
-                route = {
-                    'route_id': len(all_routes) + 1,
-                    'segments': [],
-                    'total_distance': 0,
-                    'total_revenue': 0,
-                    'total_deadhead': 0,
+                    route = {
+                        'route_id': len(all_routes) + 1,
+                        'segments': [],
+                        'total_distance': 0,
+                        'total_revenue': 0,
+                        'total_deadhead': 0,
                     'ends_near_destination': dest_lat is not None and dest_lon is not None and distance_to_dest <= dest_deadhead,
-                    'final_distance_to_dest': distance_to_dest
-                }
-                
-                for load, deadhead in current_chain:
-                    route['segments'].append({
-                        'load_id': load['load_id'],
-                        'origin': f"{load['origin']['city']}, {load['origin']['state']}",
-                        'destination': f"{load['destination']['city']}, {load['destination']['state']}",
-                        'distance_miles': load['distance_miles'],
-                        'revenue': load['revenue']['amount'],
-                        'rate_per_mile': load['revenue']['rate_per_mile'],
-                        'pickup_window': load['pickup_window'],
-                        'delivery_window': load['delivery_window'],
-                        'weight_pounds': load.get('weight_pounds'),
-                        'deadhead_before': deadhead
-                    })
-                    route['total_distance'] += load['distance_miles']
-                    route['total_revenue'] += load['revenue']['amount']
-                    route['total_deadhead'] += deadhead
-                
-                chain_sig = tuple(l[0]['load_id'] for l in current_chain)
-                if chain_sig not in processed_chains:
-                    all_routes.append(route)
-                    processed_chains.add(chain_sig)
+                        'final_distance_to_dest': distance_to_dest
+                    }
+                    
+                    for load, deadhead in current_chain:
+                        route['segments'].append({
+                            'load_id': load['load_id'],
+                            'origin': f"{load['origin']['city']}, {load['origin']['state']}",
+                            'destination': f"{load['destination']['city']}, {load['destination']['state']}",
+                            'distance_miles': load['distance_miles'],
+                            'revenue': load['revenue']['amount'],
+                            'rate_per_mile': load['revenue']['rate_per_mile'],
+                            'pickup_window': load['pickup_window'],
+                            'delivery_window': load['delivery_window'],
+                            'weight_pounds': load.get('weight_pounds'),
+                            'deadhead_before': deadhead
+                        })
+                        route['total_distance'] += load['distance_miles']
+                        route['total_revenue'] += load['revenue']['amount']
+                        route['total_deadhead'] += deadhead
+                    
+                    chain_sig = tuple(l[0]['load_id'] for l in current_chain)
+                    if chain_sig not in processed_chains:
+                        all_routes.append(route)
+                        processed_chains.add(chain_sig)
             
             # Try to extend chain (continue exploring even after adding current route)
             # This allows finding longer chains and alternate routes through intermediate states
