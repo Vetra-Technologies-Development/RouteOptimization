@@ -1,6 +1,6 @@
 """Supabase service for database operations."""
 import logging
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Tuple
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -94,11 +94,11 @@ class SupabaseService:
             logger.error(f"Error saving load to Supabase: {e}", exc_info=True)
             return False
     
-    def remove_load(self, account_data: Dict, load_data: Dict) -> bool:
+    def remove_load(self, account_data: Dict, load_data: Dict) -> Tuple[bool, str]:
         """Remove a load from Supabase."""
         if not self.client:
             logger.error("Supabase client not initialized")
-            return False
+            return False, "Supabase not configured"
         
         try:
             # Create unique identifier: user_id + tracking_number
@@ -107,16 +107,22 @@ class SupabaseService:
             
             if not user_id or not tracking_number:
                 logger.error("Missing user_id or tracking_number")
-                return False
+                return False, "Missing user_id or tracking_number"
             
             unique_id = f"{user_id}_{tracking_number}"
             
+            # Check if load exists
+            existing = self.client.table('loadboard_loads').select('unique_id').eq('unique_id', unique_id).limit(1).execute()
+            if not existing.data:
+                logger.warning(f"Load {unique_id} does not exist")
+                return False, f"ID does not exist: {unique_id}"
+
             # Remove load from Supabase
-            result = self.client.table('loadboard_loads').delete().eq('unique_id', unique_id).execute()
+            self.client.table('loadboard_loads').delete().eq('unique_id', unique_id).execute()
             logger.info(f"Removed load {unique_id} from Supabase")
-            return True
+            return True, "Removed"
             
         except Exception as e:
             logger.error(f"Error removing load from Supabase: {e}", exc_info=True)
-            return False
+            return False, f"Error: {str(e)}"
 

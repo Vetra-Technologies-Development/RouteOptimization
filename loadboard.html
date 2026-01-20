@@ -226,6 +226,11 @@
           body: payloadText
         });
         document.getElementById("postResult").textContent = JSON.stringify(result, null, 2);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await Promise.all([
+          document.getElementById("countBtn").click(),
+          document.getElementById("getBtn").click()
+        ]);
       });
 
       document.getElementById("clearBtn").addEventListener("click", () => {

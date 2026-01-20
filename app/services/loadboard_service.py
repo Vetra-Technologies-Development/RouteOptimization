@@ -50,16 +50,25 @@ class LoadBoardService:
             
             elif operation == 'remove':
                 # Process RemoveLoads
+                missing_ids: List[str] = []
                 for load_data in loads:
                     try:
-                        if self.supabase_service.remove_load(account_data, load_data):
+                        removed, message = self.supabase_service.remove_load(account_data, load_data)
+                        if removed:
                             success_count += 1
+                        else:
+                            if "ID does not exist" in message:
+                                missing_ids.append(message.replace("ID does not exist: ", ""))
                     except Exception as e:
                         logger.error(f"Error processing remove load: {e}", exc_info=True)
                         continue
                 
                 logger.info(f"Successfully removed {success_count}/{len(loads)} loads")
-                return "Successfully posted", success_count
+                if missing_ids and success_count == 0:
+                    return f"ID does not exist: {', '.join(missing_ids)}", success_count
+                if missing_ids:
+                    return f"Removed {success_count}, missing: {', '.join(missing_ids)}", success_count
+                return "Successfully removed", success_count
             
             else:
                 return "Data format incorrect", 0
