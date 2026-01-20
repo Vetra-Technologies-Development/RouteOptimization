@@ -92,9 +92,10 @@ Find all possible route chains from origin to destination.
   "loads": [...]
 }
 ```
-
-
-Loadboard/dashboard - new end point
+New End Point - 3rd part integration
+bash```
+[Loadboard/dashboard - new end point](https://route-optimization-six.vercel.app/loadboard/dashboard)
+```
 
 ## Deployment
 
