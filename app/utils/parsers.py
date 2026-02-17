@@ -1,7 +1,120 @@
 """XML parsing utilities for LoadBoard Network."""
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+
+try:
+    PACIFIC_TZ = ZoneInfo("America/Los_Angeles")
+except ZoneInfoNotFoundError:
+    PACIFIC_TZ = timezone.utc
+
+STATE_TZ_MAP = {
+    # Pacific
+    "CA": "America/Los_Angeles",
+    "OR": "America/Los_Angeles",
+    "WA": "America/Los_Angeles",
+    "NV": "America/Los_Angeles",
+    # Mountain
+    "AZ": "America/Phoenix",
+    "CO": "America/Denver",
+    "ID": "America/Denver",
+    "MT": "America/Denver",
+    "NM": "America/Denver",
+    "UT": "America/Denver",
+    "WY": "America/Denver",
+    # Central
+    "AL": "America/Chicago",
+    "AR": "America/Chicago",
+    "IA": "America/Chicago",
+    "IL": "America/Chicago",
+    "KS": "America/Chicago",
+    "LA": "America/Chicago",
+    "MN": "America/Chicago",
+    "MO": "America/Chicago",
+    "MS": "America/Chicago",
+    "ND": "America/Chicago",
+    "NE": "America/Chicago",
+    "OK": "America/Chicago",
+    "SD": "America/Chicago",
+    "TN": "America/Chicago",
+    "TX": "America/Chicago",
+    "WI": "America/Chicago",
+    # Eastern
+    "CT": "America/New_York",
+    "DC": "America/New_York",
+    "DE": "America/New_York",
+    "FL": "America/New_York",
+    "GA": "America/New_York",
+    "IN": "America/New_York",
+    "KY": "America/New_York",
+    "MA": "America/New_York",
+    "MD": "America/New_York",
+    "ME": "America/New_York",
+    "MI": "America/New_York",
+    "NC": "America/New_York",
+    "NH": "America/New_York",
+    "NJ": "America/New_York",
+    "NY": "America/New_York",
+    "OH": "America/New_York",
+    "PA": "America/New_York",
+    "RI": "America/New_York",
+    "SC": "America/New_York",
+    "VA": "America/New_York",
+    "VT": "America/New_York",
+    "WV": "America/New_York",
+}
+
+
+def _get_timezone_for_state(state: Optional[str]):
+    if not state:
+        return PACIFIC_TZ
+    tz_name = STATE_TZ_MAP.get(state.upper(), "America/Los_Angeles")
+    try:
+        return ZoneInfo(tz_name)
+    except ZoneInfoNotFoundError:
+        return timezone.utc
+
+
+def _format_date_time(dt: Optional[datetime]) -> Dict[str, Optional[str]]:
+    if not dt:
+        return {"iso": None}
+    return {"iso": dt.isoformat()}
+
+
+def _convert_local_to_pacific(dt: Optional[datetime], state: Optional[str]) -> Dict[str, Optional[str]]:
+    if not dt:
+        return {
+            "date": None,
+            "time": None,
+            "iso": None,
+        }
+    local_tz = _get_timezone_for_state(state)
+    local_dt = dt.replace(tzinfo=local_tz)
+    pacific_dt = local_dt.astimezone(PACIFIC_TZ)
+    return _format_date_time(pacific_dt)
+
+
+def _localize_to_state(dt: Optional[datetime], state: Optional[str]) -> Optional[datetime]:
+    if not dt:
+        return None
+    local_tz = _get_timezone_for_state(state)
+    return dt.replace(tzinfo=local_tz)
+
+
+def _map_equipment_code(equipment_elem: Optional[ET.Element]) -> Optional[str]:
+    if equipment_elem is None:
+        return None
+    equipment_tags = [child.tag.lower() for child in equipment_elem]
+    if not equipment_tags:
+        return None
+    van_tags = {"v", "r"}
+    flatbed_tags = {"f", "sd", "lb", "hb", "dt", "dd", "po", "ac", "t"}
+    if any(tag in flatbed_tags for tag in equipment_tags):
+        return "F"
+    if any(tag in van_tags for tag in equipment_tags):
+        return "V"
+    return None
 
 
 def parse_date_element(date_elem) -> Optional[datetime]:
@@ -37,9 +150,23 @@ def parse_load_xml(load_elem) -> Dict[str, Any]:
     """Parse a single load element from XML."""
     load_data = {}
     
-    # Tracking number
+    # Tracking number / load id
     tracking_number = load_elem.find('tracking-number')
-    load_data['tracking_number'] = tracking_number.text if tracking_number is not None and tracking_number.text else None
+    load_id_elem = load_elem.find('load-id')
+    tracking_value = None
+    if tracking_number is not None:
+        tracking_attr = (
+            tracking_number.get("id")
+            or tracking_number.get("tracking-id")
+            or tracking_number.get("external-id")
+        )
+        if tracking_attr and tracking_attr.strip():
+            tracking_value = tracking_attr.strip()
+        elif tracking_number.text and tracking_number.text.strip():
+            tracking_value = tracking_number.text.strip()
+    load_id_value = load_id_elem.text.strip() if load_id_elem is not None and load_id_elem.text and load_id_elem.text.strip() else None
+    load_data['tracking_number'] = tracking_value
+    load_data['load_id'] = load_id_value or tracking_value
     
     # Origin
     origin = load_elem.find('origin')
@@ -53,10 +180,24 @@ def parse_load_xml(load_elem) -> Dict[str, Any]:
         load_data['origin_longitude'] = float(origin.find('longitude').text) if origin.find('longitude') is not None and origin.find('longitude').text and origin.find('longitude').text != '0' else None
         
         origin_date_start = origin.find('date-start')
-        load_data['origin_pickup_date'] = parse_date_element(origin_date_start)
+        origin_pickup_dt = parse_date_element(origin_date_start)
+        origin_state = load_data.get('origin_state')
+        origin_pickup_local_dt = _localize_to_state(origin_pickup_dt, origin_state)
+        load_data['origin_pickup_date'] = origin_pickup_local_dt
         
         origin_date_end = origin.find('date-end')
-        load_data['origin_pickup_date_end'] = parse_date_element(origin_date_end)
+        origin_pickup_end_dt = parse_date_element(origin_date_end)
+        origin_pickup_local_end_dt = _localize_to_state(origin_pickup_end_dt, origin_state)
+        load_data['origin_pickup_date_end'] = origin_pickup_local_end_dt
+
+        origin_local = _format_date_time(origin_pickup_local_dt)
+        origin_local_end = _format_date_time(origin_pickup_local_end_dt)
+        origin_pacific = _convert_local_to_pacific(origin_pickup_dt, origin_state)
+        origin_pacific_end = _convert_local_to_pacific(origin_pickup_end_dt, origin_state)
+        load_data['origin_pickup_local'] = origin_local["iso"]
+        load_data['origin_pickup_local_end'] = origin_local_end["iso"]
+        load_data['origin_pickup_pst'] = origin_pacific["iso"]
+        load_data['origin_pickup_pst_end'] = origin_pacific_end["iso"]
     
     # Destination
     destination = load_elem.find('destination')
@@ -70,21 +211,29 @@ def parse_load_xml(load_elem) -> Dict[str, Any]:
         load_data['destination_longitude'] = float(destination.find('longitude').text) if destination.find('longitude') is not None and destination.find('longitude').text and destination.find('longitude').text != '0' else None
         
         dest_date_start = destination.find('date-start')
-        load_data['destination_delivery_date'] = parse_date_element(dest_date_start)
+        dest_delivery_dt = parse_date_element(dest_date_start)
+        destination_state = load_data.get('destination_state')
+        dest_delivery_local_dt = _localize_to_state(dest_delivery_dt, destination_state)
+        load_data['destination_delivery_date'] = dest_delivery_local_dt
         
         dest_date_end = destination.find('date-end')
-        load_data['destination_delivery_date_end'] = parse_date_element(dest_date_end)
+        dest_delivery_end_dt = parse_date_element(dest_date_end)
+        dest_delivery_local_end_dt = _localize_to_state(dest_delivery_end_dt, destination_state)
+        load_data['destination_delivery_date_end'] = dest_delivery_local_end_dt
+
+        dest_local = _format_date_time(dest_delivery_local_dt)
+        dest_local_end = _format_date_time(dest_delivery_local_end_dt)
+        dest_pacific = _convert_local_to_pacific(dest_delivery_dt, destination_state)
+        dest_pacific_end = _convert_local_to_pacific(dest_delivery_end_dt, destination_state)
+        load_data['destination_delivery_local'] = dest_local["iso"]
+        load_data['destination_delivery_local_end'] = dest_local_end["iso"]
+        load_data['destination_delivery_pst'] = dest_pacific["iso"]
+        load_data['destination_delivery_pst_end'] = dest_pacific_end["iso"]
     
     # Equipment
     equipment = load_elem.find('equipment')
     if equipment is not None:
-        # Parse equipment types (can be multiple)
-        equipment_types = []
-        for child in equipment:
-            eq_type = child.tag
-            attrs = child.attrib
-            equipment_types.append({'type': eq_type, 'attributes': attrs})
-        load_data['equipment'] = equipment_types
+        load_data['equipment'] = _map_equipment_code(equipment)
     
     # Load size
     loadsize = load_elem.find('loadsize')
