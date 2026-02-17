@@ -13,7 +13,7 @@ class SupabaseService:
         """Initialize with Supabase client."""
         self.client = client
     
-    def save_load(self, account_data: Dict, load_data: Dict) -> bool:
+    def save_load(self, account_data: Dict, load_data: Dict, operation: str) -> bool:
         """Save or update a load in Supabase."""
         if not self.client:
             logger.error("Supabase client not initialized")
@@ -23,6 +23,7 @@ class SupabaseService:
             # Create unique identifier: user_id + tracking_number
             user_id = account_data.get('userID') or account_data.get('userid')
             tracking_number = load_data.get('tracking_number')
+            load_id = load_data.get('load_id') or tracking_number
             
             if not user_id or not tracking_number:
                 logger.error("Missing user_id or tracking_number")
@@ -30,12 +31,19 @@ class SupabaseService:
             
             unique_id = f"{user_id}_{tracking_number}"
             
+            existing = self.client.table('loadboard_loads').select('unique_id').eq('unique_id', unique_id).limit(1).execute()
+            action_value = "update" if existing.data else "posting"
+            if operation == "remove":
+                action_value = "deleted"
+
             # Prepare load record for Supabase - include all fields from XML
             load_record = {
                 'unique_id': unique_id,
                 'user_id': user_id,
                 'user_name': account_data.get('username'),
                 'tracking_number': tracking_number,
+                'load_id': load_id,
+                'action': action_value,
                 'company_name': account_data.get('companyname'),
                 'contact_name': account_data.get('contactname'),
                 'contact_phone': account_data.get('contactphone'),
@@ -53,6 +61,10 @@ class SupabaseService:
                 'origin_longitude': load_data.get('origin_longitude'),
                 'origin_pickup_date': load_data.get('origin_pickup_date').isoformat() if load_data.get('origin_pickup_date') else None,
                 'origin_pickup_date_end': load_data.get('origin_pickup_date_end').isoformat() if load_data.get('origin_pickup_date_end') else None,
+                'origin_pickup_local': load_data.get('origin_pickup_local'),
+                'origin_pickup_local_end': load_data.get('origin_pickup_local_end'),
+                'origin_pickup_pst': load_data.get('origin_pickup_pst'),
+                'origin_pickup_pst_end': load_data.get('origin_pickup_pst_end'),
                 # Destination fields
                 'destination_city': load_data.get('destination_city'),
                 'destination_state': load_data.get('destination_state'),
@@ -63,8 +75,12 @@ class SupabaseService:
                 'destination_longitude': load_data.get('destination_longitude'),
                 'destination_delivery_date': load_data.get('destination_delivery_date').isoformat() if load_data.get('destination_delivery_date') else None,
                 'destination_delivery_date_end': load_data.get('destination_delivery_date_end').isoformat() if load_data.get('destination_delivery_date_end') else None,
+                'destination_delivery_local': load_data.get('destination_delivery_local'),
+                'destination_delivery_local_end': load_data.get('destination_delivery_local_end'),
+                'destination_delivery_pst': load_data.get('destination_delivery_pst'),
+                'destination_delivery_pst_end': load_data.get('destination_delivery_pst_end'),
                 # Equipment and load size
-                'equipment': str(load_data.get('equipment', [])),
+                'equipment': load_data.get('equipment'),
                 'full_load': load_data.get('full_load', False),
                 'length': load_data.get('length'),
                 'width': load_data.get('width'),
@@ -75,6 +91,7 @@ class SupabaseService:
                 'stops': load_data.get('stops', 0),
                 'distance': load_data.get('distance'),
                 'rate': load_data.get('rate'),
+                'rpm': load_data.get('rpm'),
                 'comment': load_data.get('comment'),
                 'created_at': datetime.utcnow().isoformat(),
                 'updated_at': datetime.utcnow().isoformat()
@@ -116,11 +133,15 @@ class SupabaseService:
             if not existing.data:
                 logger.warning(f"Load {unique_id} does not exist")
                 return False, f"ID does not exist: {unique_id}"
-
-            # Remove load from Supabase
-            self.client.table('loadboard_loads').delete().eq('unique_id', unique_id).execute()
-            logger.info(f"Removed load {unique_id} from Supabase")
-            return True, "Removed"
+            
+            # Mark load as deleted in Supabase
+            update_record = {
+                "action": "deleted",
+                "updated_at": datetime.utcnow().isoformat(),
+            }
+            self.client.table('loadboard_loads').update(update_record).eq('unique_id', unique_id).execute()
+            logger.info(f"Marked load {unique_id} as deleted in Supabase")
+            return True, "Deleted"
             
         except Exception as e:
             logger.error(f"Error removing load from Supabase: {e}", exc_info=True)

@@ -4,6 +4,7 @@ uvicorn[standard]>=0.32.0
 pydantic>=2.10.0
 requests>=2.32.0
 python-dotenv>=1.0.0
+tzdata>=2024.1
 
 # Supabase for LoadBoard Network integration
 # Note: On Vercel, this should install successfully as the build environment has necessary tools

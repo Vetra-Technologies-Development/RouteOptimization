@@ -30,6 +30,9 @@ class Settings:
     SUPABASE_SERVICE_ROLE_KEY: Optional[str] = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
     SUPABASE_ANON_KEY: Optional[str] = os.getenv("SUPABASE_ANON_KEY")
 
+    # Mapbox Configuration
+    MAPBOX_API_KEY: Optional[str] = os.getenv("MAPBOX_API_KEY")
+
 
 settings = Settings()
 
