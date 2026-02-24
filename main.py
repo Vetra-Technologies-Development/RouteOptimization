@@ -1387,6 +1387,8 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
     max_deadhead_limit = 500  # Maximum deadhead to try
     initial_origin_deadhead = max_deadhead
     initial_dest_deadhead = dest_deadhead
+    best_routes = []
+    best_deadhead = max_deadhead
     
     while iteration < max_iterations and max_deadhead <= max_deadhead_limit:
         # Find loads that start near origin
@@ -1711,6 +1713,10 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
         # Renumber routes
         for i, route in enumerate(filtered_routes):
             route['route_id'] = i + 1
+
+        if len(filtered_routes) > len(best_routes):
+            best_routes = list(filtered_routes)
+            best_deadhead = max_deadhead
         
         # If we have enough routes, return them
         if len(filtered_routes) >= min_required_routes:
@@ -1737,7 +1743,9 @@ def find_all_routes_from_request(request: AllRoutesRequest, max_chain_length: in
     # Reached max iterations or max deadhead limit
     if iteration > 0:
         logger.warning(f"Reached maximum deadhead limit ({max_deadhead_limit} miles) or iterations ({max_iterations}) without finding routes")
-    # Return empty list if no routes found
+    # Return any routes we did find, even if below the target minimum
+    if best_routes:
+        return best_routes, best_deadhead
     return [], max_deadhead
 
 
