@@ -139,6 +139,24 @@
         font-weight: 600;
         font-size: 13px;
       }
+      .detail-grid {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 6px 12px;
+        margin-top: 10px;
+        font-size: 12px;
+      }
+      .detail-label { color: var(--muted); }
+      .detail-value { word-break: break-word; }
+      .xml-sample {
+        margin-top: 10px;
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        white-space: pre-wrap;
+      }
       .field-list {
         margin: 10px 0 0 0;
         padding: 0 0 0 16px;
@@ -208,17 +226,78 @@
               <button id="clearBtn" class="secondary">Clear</button>
             </div>
             <pre id="postResult">Result will appear here.</pre>
-            <p>Posting Account fields (visible example):</p>
-            <ul class="field-list">
-              <li>ContactName</li>
-              <li>ContactPhone</li>
-              <li>ContactFax</li>
-              <li>ContactEmail</li>
-              <li>CompanyName</li>
-              <li>UserID</li>
-              <li>mcNumber</li>
-              <li>dotNumber</li>
-            </ul>
+            <p>XML Example (includes contact, equipment, dates, and load details):</p>
+            <pre class="xml-sample">&lt;LBNLoadPostings&gt;
+  &lt;PostingAccount&gt;
+    &lt;UserName&gt;demo-user&lt;/UserName&gt;
+    &lt;Password&gt;demo-pass&lt;/Password&gt;
+    &lt;ContactName&gt;John Smith&lt;/ContactName&gt;
+    &lt;ContactPhone&gt;555-111-2222&lt;/ContactPhone&gt;
+    &lt;ContactFax&gt;555-111-3333&lt;/ContactFax&gt;
+    &lt;ContactEmail&gt;dispatch@example.com&lt;/ContactEmail&gt;
+    &lt;CompanyName&gt;Vetra Logistics&lt;/CompanyName&gt;
+    &lt;UserID&gt;USER123&lt;/UserID&gt;
+    &lt;mcNumber&gt;MC123456&lt;/mcNumber&gt;
+    &lt;dotNumber&gt;DOT987654&lt;/dotNumber&gt;
+  &lt;/PostingAccount&gt;
+  &lt;PostLoads&gt;
+    &lt;load&gt;
+      &lt;tracking-number&gt;LPN123456789&lt;/tracking-number&gt;
+      &lt;origin&gt;
+        &lt;city&gt;GRAND PRAIRIE&lt;/city&gt;
+        &lt;state&gt;TX&lt;/state&gt;
+        &lt;postcode&gt;75050&lt;/postcode&gt;
+        &lt;date-start&gt;
+          &lt;year&gt;2026&lt;/year&gt;
+          &lt;month&gt;02&lt;/month&gt;
+          &lt;day&gt;17&lt;/day&gt;
+          &lt;hour&gt;08&lt;/hour&gt;
+          &lt;minute&gt;00&lt;/minute&gt;
+        &lt;/date-start&gt;
+        &lt;date-end&gt;
+          &lt;year&gt;2026&lt;/year&gt;
+          &lt;month&gt;02&lt;/month&gt;
+          &lt;day&gt;17&lt;/day&gt;
+          &lt;hour&gt;17&lt;/hour&gt;
+          &lt;minute&gt;00&lt;/minute&gt;
+        &lt;/date-end&gt;
+      &lt;/origin&gt;
+      &lt;destination&gt;
+        &lt;city&gt;FT MORGAN&lt;/city&gt;
+        &lt;state&gt;CO&lt;/state&gt;
+        &lt;postcode&gt;80701&lt;/postcode&gt;
+        &lt;date-start&gt;
+          &lt;year&gt;2026&lt;/year&gt;
+          &lt;month&gt;02&lt;/month&gt;
+          &lt;day&gt;19&lt;/day&gt;
+          &lt;hour&gt;08&lt;/hour&gt;
+          &lt;minute&gt;00&lt;/minute&gt;
+        &lt;/date-start&gt;
+        &lt;date-end&gt;
+          &lt;year&gt;2026&lt;/year&gt;
+          &lt;month&gt;02&lt;/month&gt;
+          &lt;day&gt;19&lt;/day&gt;
+          &lt;hour&gt;17&lt;/hour&gt;
+          &lt;minute&gt;00&lt;/minute&gt;
+        &lt;/date-end&gt;
+      &lt;/destination&gt;
+      &lt;equipment&gt;
+        &lt;r hazmat="true"/&gt;
+      &lt;/equipment&gt;
+      &lt;loadsize fullload="true"&gt;
+        &lt;length&gt;53&lt;/length&gt;
+        &lt;width&gt;102&lt;/width&gt;
+        &lt;height&gt;110&lt;/height&gt;
+        &lt;weight&gt;45000&lt;/weight&gt;
+      &lt;/loadsize&gt;
+      &lt;load-count&gt;1&lt;/load-count&gt;
+      &lt;stops&gt;2&lt;/stops&gt;
+      &lt;distance&gt;600&lt;/distance&gt;
+      &lt;rate&gt;1800&lt;/rate&gt;
+      &lt;comment&gt;Fragile load - call before delivery&lt;/comment&gt;
+    &lt;/load&gt;
+  &lt;/PostLoads&gt;
+&lt;/LBNLoadPostings&gt;</pre>
           </details>
         </div>
 
@@ -283,6 +362,7 @@
           const tr = document.createElement("tr");
           const origin = [load.origin_city, load.origin_state].filter(Boolean).join(", ");
           const dest = [load.destination_city, load.destination_state].filter(Boolean).join(", ");
+          const detailsHtml = buildDetailsHtml(load);
           tr.innerHTML = `
             <td>${load.tracking_number || ""}</td>
             <td>${load.user_id || ""}</td>
@@ -293,12 +373,81 @@
             <td>
               <details>
                 <summary>Expand</summary>
-                <pre>${JSON.stringify(load, null, 2)}</pre>
+                ${detailsHtml}
               </details>
             </td>
           `;
           body.appendChild(tr);
         });
+      }
+
+      function buildDetailsHtml(load) {
+        const originStart = load.origin_pickup_date || load.origin_pickup_local || "";
+        const originEnd = load.origin_pickup_date_end || load.origin_pickup_local_end || "";
+        const destStart = load.destination_delivery_date || load.destination_delivery_local || "";
+        const destEnd = load.destination_delivery_date_end || load.destination_delivery_local_end || "";
+        const equipment = formatEquipment(load.equipment);
+        const loadSize = load.full_load === true ? "Full" : (load.full_load === false ? "Partial" : "");
+        const detailRows = [
+          ["Tracking Number", load.tracking_number || ""],
+          ["Contact Name", load.contact_name || ""],
+          ["Contact Phone", load.contact_phone || ""],
+          ["Contact Fax", load.contact_fax || ""],
+          ["Contact Email", load.contact_email || ""],
+          ["MC Number", load.mc_number || ""],
+          ["DOT Number", load.dot_number || ""],
+          ["Origin", [load.origin_city, load.origin_state].filter(Boolean).join(", ")],
+          ["Origin Start date", originStart],
+          ["Origin End date", originEnd],
+          ["Destination", [load.destination_city, load.destination_state].filter(Boolean).join(", ")],
+          ["Destination Start date", destStart],
+          ["Destination End date", destEnd],
+          ["Equipment Type", equipment],
+          ["Loadsize", loadSize],
+          ["Length", load.length || ""],
+          ["Width", load.width || ""],
+          ["Height", load.height || ""],
+          ["Load Count", load.load_count ?? ""],
+          ["Stops", load.stops ?? ""],
+          ["Distance", load.distance ?? ""],
+          ["Rate", load.rate ?? ""],
+          ["Comment", load.comment || ""],
+        ];
+        const rowsHtml = detailRows
+          .map(([label, value]) => {
+            const display = (value === null || value === undefined || value === "") ? "-" : value;
+            return `<div class="detail-label">${label}</div><div class="detail-value">${display}</div>`;
+          })
+          .join("");
+        return `<div class="detail-grid">${rowsHtml}</div>`;
+      }
+
+      function formatEquipment(value) {
+        if (!value) return "";
+        if (typeof value === "string") {
+          const trimmed = value.trim();
+          if (!trimmed) return "";
+          try {
+            const parsed = JSON.parse(trimmed);
+            return renderEquipment(parsed);
+          } catch {
+            return trimmed;
+          }
+        }
+        return renderEquipment(value);
+      }
+
+      function renderEquipment(parsed) {
+        if (!parsed) return "";
+        if (typeof parsed === "string") return parsed;
+        if (Array.isArray(parsed)) {
+          return parsed.map((item) => item.type || "").filter(Boolean).join(", ");
+        }
+        if (parsed.profile) return parsed.profile;
+        if (parsed.items && Array.isArray(parsed.items)) {
+          return parsed.items.map((item) => item.type || "").filter(Boolean).join(", ");
+        }
+        return "";
       }
 
       function updatePaginationUi() {

@@ -765,9 +765,16 @@ async def get_loadboard_loads(limit: int = 50, offset: int = 0):
             result = (
                 supabase_client.table("loadboard_loads")
                 .select(
-                    "unique_id,tracking_number,user_id,origin_city,origin_state,"
-                    "destination_city,destination_state,origin_pickup_date,"
-                    "destination_delivery_date,rate,weight,created_at,updated_at",
+                    "unique_id,tracking_number,user_id,user_name,company_name,"
+                    "contact_name,contact_phone,contact_fax,contact_email,mc_number,dot_number,"
+                    "origin_city,origin_state,origin_postcode,origin_county,origin_country,"
+                    "origin_latitude,origin_longitude,origin_pickup_date,origin_pickup_date_end,"
+                    "origin_pickup_local,origin_pickup_local_end,origin_pickup_pst,origin_pickup_pst_end,"
+                    "destination_city,destination_state,destination_postcode,destination_county,destination_country,"
+                    "destination_latitude,destination_longitude,destination_delivery_date,destination_delivery_date_end,"
+                    "destination_delivery_local,destination_delivery_local_end,destination_delivery_pst,destination_delivery_pst_end,"
+                    "equipment,full_load,length,width,height,weight,load_count,stops,distance,rate,comment,"
+                    "action,rpm,load_id,created_at,updated_at",
                     count="exact"
                 )
                 .order("updated_at", desc=True)
