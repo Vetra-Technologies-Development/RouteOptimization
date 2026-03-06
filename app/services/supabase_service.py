@@ -1,4 +1,5 @@
 """Supabase service for database operations."""
+import json
 import logging
 from typing import Optional, Dict, Any, Tuple
 from datetime import datetime
@@ -80,7 +81,7 @@ class SupabaseService:
                 'destination_delivery_pst': load_data.get('destination_delivery_pst'),
                 'destination_delivery_pst_end': load_data.get('destination_delivery_pst_end'),
                 # Equipment and load size
-                'equipment': load_data.get('equipment'),
+                'equipment': self._serialize_equipment(load_data.get('equipment')),
                 'full_load': load_data.get('full_load', False),
                 'length': load_data.get('length'),
                 'width': load_data.get('width'),
@@ -110,6 +111,16 @@ class SupabaseService:
         except Exception as e:
             logger.error(f"Error saving load to Supabase: {e}", exc_info=True)
             return False
+
+    def _serialize_equipment(self, equipment_value: Any) -> Optional[str]:
+        if equipment_value is None:
+            return None
+        if isinstance(equipment_value, str):
+            return equipment_value
+        try:
+            return json.dumps(equipment_value)
+        except (TypeError, ValueError):
+            return None
     
     def remove_load(self, account_data: Dict, load_data: Dict) -> Tuple[bool, str]:
         """Remove a load from Supabase."""

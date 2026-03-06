@@ -1,6 +1,7 @@
 """XML parsing utilities for LoadBoard Network."""
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
+from enum import Enum
 from typing import Optional, Dict, Any, List
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -102,18 +103,147 @@ def _localize_to_state(dt: Optional[datetime], state: Optional[str]) -> Optional
     return dt.replace(tzinfo=local_tz)
 
 
-def _map_equipment_code(equipment_elem: Optional[ET.Element]) -> Optional[str]:
+class EquipmentTag(str, Enum):
+    AUTO_CARRIER = "ac"
+    DOUBLE_DROP = "dd"
+    DUMP_TRAILER = "dt"
+    FLATBED = "f"
+    HOPPER_BOTTOM = "hb"
+    LOWBOY = "lb"
+    POWER_ONLY = "po"
+    REEFER = "r"
+    STEP_DECK = "sd"
+    TANKER = "t"
+    VAN = "v"
+
+
+class EquipmentProfile(str, Enum):
+    AUTO_CARRIER = "Auto Carrier"
+    DOUBLE_DROP = "Double Drop"
+    DUMP_TRAILER = "Dump Trailer"
+    FLATBED = "Flatbed"
+    FLATBED_HAZARDOUS = "Flatbed Hazardous"
+    FLATBED_OR_STEP_DECK = "Flatbed or Step Deck"
+    FLATBED_OR_VAN = "Flatbed or Van"
+    FLATBED_B_TRAIN = "Flatbed B-Train"
+    FLATBED_PALLET_EXCHANGE = "Flatbed w/Pallet Exchange"
+    FLATBED_SIDES = "Flatbed w/Sides"
+    FLATBED_TARPS = "Flatbed w/Tarps"
+    FLATBED_TEAM = "Flatbed w/Team"
+    FLATBED_VAN_REEFER = "Flatbed/Van/Reefer"
+    HOPPER_BOTTOM = "Hopper Bottom"
+    HOTSHOT = "Hotshot"
+    LOWBOY = "Lowboy"
+    MAXI = "Maxi"
+    POWER_ONLY = "Power Only"
+    REEFER = "Reefer"
+    REEFER_HAZARDOUS = "Reefer Hazardous"
+    REEFER_OR_VAN = "Reefer or Van"
+    REEFER_PALLET_EXCHANGE = "Reefer w/Pallet Exchange"
+    REEFER_FLATBED_VAN = "Reefer/Flatbed/Van"
+    REMOVABLE_GOOSENECK = "Removable Gooseneck"
+    STEP_DECK = "Step Deck"
+    TANKER = "Tanker"
+    VAN = "Van"
+    VAN_HAZARDOUS = "Van Hazardous"
+    VAN_AIR_RIDE = "Van Air-Ride"
+    VAN_OR_FLATBED = "Van or Flatbed"
+    VAN_OR_REEFER = "Van or Reefer"
+    VAN_VENTED = "Van Vented"
+    VAN_CURTAINS = "Van w/Curtains"
+    VAN_PALLET_EXCHANGE = "Van w/Pallet Exchange"
+    VAN_TEAM = "Van w/Team"
+    VAN_WALKING_FLOOR = "Van Walking Floor"
+    VAN_REEFER_FLATBED = "Van/Reefer/Flatbed"
+
+
+def _matches_profile(
+    items: List[Dict[str, Any]],
+    tag_set: List[str],
+    attr_requirements: Optional[Dict[str, Dict[str, str]]] = None,
+) -> bool:
+    if {item["type"] for item in items} != set(tag_set):
+        return False
+    if not attr_requirements:
+        return True
+    for tag, attrs in attr_requirements.items():
+        match = next((item for item in items if item["type"] == tag), None)
+        if not match:
+            return False
+        for key, val in attrs.items():
+            if match["attributes"].get(key) != val:
+                return False
+    return True
+
+
+def _infer_equipment_profile(items: List[Dict[str, Any]]) -> Optional[str]:
+    if not items:
+        return None
+    profiles = [
+        (EquipmentProfile.AUTO_CARRIER, ["ac"], None),
+        (EquipmentProfile.DOUBLE_DROP, ["dd"], None),
+        (EquipmentProfile.DUMP_TRAILER, ["dt"], None),
+        (EquipmentProfile.FLATBED, ["f"], None),
+        (EquipmentProfile.FLATBED_HAZARDOUS, ["f"], {"f": {"hazmat": "true"}}),
+        (EquipmentProfile.FLATBED_OR_STEP_DECK, ["f", "sd"], None),
+        (EquipmentProfile.FLATBED_OR_VAN, ["f", "v"], None),
+        (EquipmentProfile.FLATBED_B_TRAIN, ["f"], {"f": {"b-train": "true"}}),
+        (EquipmentProfile.FLATBED_PALLET_EXCHANGE, ["f"], {"f": {"palletexchange": "true"}}),
+        (EquipmentProfile.FLATBED_SIDES, ["f"], {"f": {"sides": "true"}}),
+        (EquipmentProfile.FLATBED_TARPS, ["f"], {"f": {"tarps": "true"}}),
+        (EquipmentProfile.FLATBED_TEAM, ["f"], {"f": {"team": "true"}}),
+        (EquipmentProfile.FLATBED_VAN_REEFER, ["f", "v", "r"], None),
+        (EquipmentProfile.HOPPER_BOTTOM, ["hb"], None),
+        (EquipmentProfile.HOTSHOT, ["f"], {"f": {"hotshot": "true"}}),
+        (EquipmentProfile.LOWBOY, ["lb"], None),
+        (EquipmentProfile.MAXI, ["f"], {"f": {"maxi": "true"}}),
+        (EquipmentProfile.POWER_ONLY, ["po"], None),
+        (EquipmentProfile.REEFER, ["r"], None),
+        (EquipmentProfile.REEFER_HAZARDOUS, ["r"], {"r": {"hazmat": "true"}}),
+        (EquipmentProfile.REEFER_OR_VAN, ["r", "v"], None),
+        (EquipmentProfile.REEFER_PALLET_EXCHANGE, ["r"], {"r": {"palletexchange": "true"}}),
+        (EquipmentProfile.REEFER_FLATBED_VAN, ["r", "f", "v"], None),
+        (EquipmentProfile.REMOVABLE_GOOSENECK, ["sd"], {"sd": {"removablegooseneck": "true"}}),
+        (EquipmentProfile.STEP_DECK, ["sd"], None),
+        (EquipmentProfile.TANKER, ["t"], None),
+        (EquipmentProfile.VAN, ["v"], None),
+        (EquipmentProfile.VAN_HAZARDOUS, ["v"], {"v": {"hazmat": "true"}}),
+        (EquipmentProfile.VAN_AIR_RIDE, ["v"], {"v": {"airride": "true"}}),
+        (EquipmentProfile.VAN_OR_FLATBED, ["v", "f"], None),
+        (EquipmentProfile.VAN_OR_REEFER, ["v", "r"], None),
+        (EquipmentProfile.VAN_VENTED, ["v"], {"v": {"vented": "true"}}),
+        (EquipmentProfile.VAN_CURTAINS, ["v"], {"v": {"curtains": "true"}}),
+        (EquipmentProfile.VAN_PALLET_EXCHANGE, ["v"], {"v": {"palletexchange": "true"}}),
+        (EquipmentProfile.VAN_TEAM, ["v"], {"v": {"team": "true"}}),
+        (EquipmentProfile.VAN_WALKING_FLOOR, ["v"], {"v": {"walkingfloor": "true"}}),
+        (EquipmentProfile.VAN_REEFER_FLATBED, ["v", "f", "r"], None),
+    ]
+    for profile, tags, attrs in profiles:
+        if _matches_profile(items, tags, attrs):
+            return profile.value
+    return None
+
+
+def _parse_equipment(equipment_elem: Optional[ET.Element]) -> Optional[str]:
     if equipment_elem is None:
         return None
-    equipment_tags = [child.tag.lower() for child in equipment_elem]
-    if not equipment_tags:
-        return None
-    van_tags = {"v", "r"}
-    flatbed_tags = {"f", "sd", "lb", "hb", "dt", "dd", "po", "ac", "t"}
-    if any(tag in flatbed_tags for tag in equipment_tags):
-        return "F"
-    if any(tag in van_tags for tag in equipment_tags):
-        return "V"
+    equipment_list: List[Dict[str, Any]] = []
+    for child in equipment_elem:
+        tag = child.tag.lower()
+        tag_value = tag
+        if tag in EquipmentTag._value2member_map_:
+            tag_value = EquipmentTag(tag).value
+        equipment_list.append(
+            {
+                "type": tag_value,
+                "attributes": dict(child.attrib) if child.attrib else {},
+            }
+        )
+    profile = _infer_equipment_profile(equipment_list)
+    if profile:
+        return profile
+    if equipment_list:
+        return equipment_list[0]["type"]
     return None
 
 
@@ -233,7 +363,7 @@ def parse_load_xml(load_elem) -> Dict[str, Any]:
     # Equipment
     equipment = load_elem.find('equipment')
     if equipment is not None:
-        load_data['equipment'] = _map_equipment_code(equipment)
+        load_data['equipment'] = _parse_equipment(equipment)
     
     # Load size
     loadsize = load_elem.find('loadsize')
