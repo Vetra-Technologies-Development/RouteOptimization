@@ -757,11 +757,12 @@ async def post_loadboard_load(request: Request):
 
 
 @app.get("/loadboard/simple")
-async def get_loadboard_loads(limit: int = 50, offset: int = 0):
+async def get_loadboard_loads(limit: int = 50, offset: int = 0, status: Optional[str] = None):
     """Get posted loads (Supabase if configured, otherwise in-memory)."""
     if SUPABASE_ENABLED and supabase_client:
         try:
             end_index = max(offset, 0) + max(limit, 1) - 1
+            normalized_status = status.strip().lower() if status else ""
             result = (
                 supabase_client.table("loadboard_loads")
                 .select(
@@ -774,17 +775,19 @@ async def get_loadboard_loads(limit: int = 50, offset: int = 0):
                     "destination_latitude,destination_longitude,destination_delivery_date,destination_delivery_date_end,"
                     "destination_delivery_local,destination_delivery_local_end,destination_delivery_pst,destination_delivery_pst_end,"
                     "equipment,full_load,length,width,height,weight,load_count,stops,distance,rate,comment,"
-                    "action,rpm,load_id,created_at,updated_at",
+                    "action,status,rpm,load_id,created_at,updated_at",
                     count="exact"
                 )
                 .order("updated_at", desc=True)
-                .range(max(offset, 0), end_index)
                 .execute()
             )
-            count = result.count if hasattr(result, "count") else None
-            if count is None and isinstance(result.data, list):
-                count = len(result.data)
-            return {"count": count or 0, "loads": result.data or [], "source": "supabase"}
+            rows = result.data or []
+            if normalized_status:
+                rows = [row for row in rows if (row.get("status") or "").lower() == normalized_status]
+            count = len(rows)
+            start = max(offset, 0)
+            end = start + max(limit, 1)
+            return {"count": count, "loads": rows[start:end], "source": "supabase"}
         except Exception as e:
             logger.error(f"Supabase fetch failed, falling back to memory: {e}", exc_info=True)
     start = max(offset, 0)
@@ -793,15 +796,16 @@ async def get_loadboard_loads(limit: int = 50, offset: int = 0):
 
 
 @app.get("/loadboard/count")
-async def get_loadboard_count():
+async def get_loadboard_count(status: Optional[str] = None):
     """Get total count of loads (Supabase if configured, otherwise in-memory)."""
     if SUPABASE_ENABLED and supabase_client:
         try:
-            result = supabase_client.table("loadboard_loads").select("unique_id", count="exact").execute()
-            count = result.count if hasattr(result, "count") else None
-            if count is None and isinstance(result.data, list):
-                count = len(result.data)
-            return {"count": count or 0, "source": "supabase"}
+            normalized_status = status.strip().lower() if status else ""
+            result = supabase_client.table("loadboard_loads").select("unique_id,status").execute()
+            rows = result.data or []
+            if normalized_status:
+                rows = [row for row in rows if (row.get("status") or "").lower() == normalized_status]
+            return {"count": len(rows), "source": "supabase"}
         except Exception as e:
             logger.error(f"Supabase count failed, falling back to memory: {e}", exc_info=True)
     return {"count": len(LOADBOARD_POSTS), "source": "memory"}

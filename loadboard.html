@@ -192,6 +192,14 @@
           <div class="row">
             <button id="getBtn">Get Loads</button>
             <div class="small-card">
+              <label for="statusFilter">Status:</label>
+              <select id="statusFilter">
+                <option value="">All</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="small-card">
               <span>Count:</span>
               <strong id="countValue">0</strong>
               <button id="countBtn">Refresh</button>
@@ -348,7 +356,9 @@
       async function fetchLoads(page) {
         const safePage = Math.max(1, page || 1);
         const offset = (safePage - 1) * pageSize;
-        const result = await requestJson(`/loadboard/simple?limit=${pageSize}&offset=${offset}`);
+        const status = document.getElementById("statusFilter").value;
+        const statusQuery = status ? `&status=${encodeURIComponent(status)}` : "";
+        const result = await requestJson(`/loadboard/simple?limit=${pageSize}&offset=${offset}${statusQuery}`);
         const body = document.getElementById("loadTableBody");
         body.innerHTML = "";
         const rows = (result && result.data && result.data.loads) ? result.data.loads : [];
@@ -404,6 +414,7 @@
           ["Destination End date", destEnd],
           ["Equipment Type", equipment],
           ["Loadsize", loadSize],
+          ["Action", load.action || ""],
           ["Length", load.length || ""],
           ["Width", load.width || ""],
           ["Height", load.height || ""],
@@ -460,6 +471,14 @@
         await fetchLoads(currentPage);
       });
 
+      document.getElementById("statusFilter").addEventListener("change", async () => {
+        currentPage = 1;
+        await Promise.all([
+          document.getElementById("countBtn").click(),
+          document.getElementById("getBtn").click()
+        ]);
+      });
+
       document.getElementById("prevPageBtn").addEventListener("click", async () => {
         if (currentPage > 1) {
           await fetchLoads(currentPage - 1);
@@ -473,7 +492,9 @@
       });
 
       document.getElementById("countBtn").addEventListener("click", async () => {
-        const result = await requestJson("/loadboard/count");
+        const status = document.getElementById("statusFilter").value;
+        const statusQuery = status ? `?status=${encodeURIComponent(status)}` : "";
+        const result = await requestJson(`/loadboard/count${statusQuery}`);
         const count = result && result.data && typeof result.data.count === "number"
           ? result.data.count
           : "n/a";

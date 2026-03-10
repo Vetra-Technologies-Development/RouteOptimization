@@ -2,7 +2,8 @@
 import json
 import logging
 from typing import Optional, Dict, Any, Tuple
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,8 @@ class SupabaseService:
             if operation == "remove":
                 action_value = "deleted"
 
+            status_value = self._calculate_status(load_data, action_value)
+
             # Prepare load record for Supabase - include all fields from XML
             load_record = {
                 'unique_id': unique_id,
@@ -45,6 +48,7 @@ class SupabaseService:
                 'tracking_number': tracking_number,
                 'load_id': load_id,
                 'action': action_value,
+                'status': status_value,
                 'company_name': account_data.get('companyname'),
                 'contact_name': account_data.get('contactname'),
                 'contact_phone': account_data.get('contactphone'),
@@ -121,6 +125,33 @@ class SupabaseService:
             return json.dumps(equipment_value)
         except (TypeError, ValueError):
             return None
+
+    def _calculate_status(self, load_data: Dict[str, Any], action_value: str) -> str:
+        if action_value == "deleted":
+            return "inactive"
+
+        start_dt = load_data.get('origin_pickup_date')
+        end_dt = load_data.get('origin_pickup_date_end') or load_data.get('destination_delivery_date_end')
+        if end_dt is None:
+            end_dt = start_dt
+
+        if not start_dt:
+            return "inactive"
+
+        try:
+            pacific_tz = ZoneInfo("America/Los_Angeles")
+        except ZoneInfoNotFoundError:
+            pacific_tz = timezone.utc
+        now = datetime.now(tz=pacific_tz)
+
+        compare_dt = end_dt or start_dt
+        if isinstance(compare_dt, datetime):
+            if compare_dt.tzinfo is None:
+                compare_dt = compare_dt.replace(tzinfo=pacific_tz)
+        else:
+            return "inactive"
+
+        return "active" if compare_dt > now else "inactive"
     
     def remove_load(self, account_data: Dict, load_data: Dict) -> Tuple[bool, str]:
         """Remove a load from Supabase."""
