@@ -19,8 +19,13 @@ def _calculate_status(row: Dict[str, Any]) -> str:
     if action_value == "deleted":
         return "inactive"
 
-    start_dt = row.get("origin_pickup_date")
-    end_dt = row.get("origin_pickup_date_end") or row.get("destination_delivery_date_end")
+    start_dt = row.get("origin_pickup_local") or row.get("origin_pickup_date")
+    end_dt = (
+        row.get("origin_pickup_local_end")
+        or row.get("destination_delivery_local_end")
+        or row.get("origin_pickup_date_end")
+        or row.get("destination_delivery_date_end")
+    )
     if end_dt is None:
         end_dt = start_dt
 
@@ -31,7 +36,7 @@ def _calculate_status(row: Dict[str, Any]) -> str:
         pacific_tz = ZoneInfo("America/Los_Angeles")
     except ZoneInfoNotFoundError:
         pacific_tz = timezone.utc
-    now = datetime.now(tz=pacific_tz)
+    today = datetime.now(tz=pacific_tz).date()
 
     if isinstance(end_dt, str):
         try:
@@ -45,15 +50,16 @@ def _calculate_status(row: Dict[str, Any]) -> str:
     if not isinstance(end_dt, datetime):
         return "inactive"
 
-    return "active" if end_dt > now else "inactive"
+    compare_date = end_dt.astimezone(pacific_tz).date()
+    return "active" if compare_date >= today else "inactive"
 
 
 def _fetch_batch(client, start: int, end: int) -> List[Dict[str, Any]]:
     result = (
         client.table("loadboard_loads")
         .select(
-            "unique_id,action,status,origin_pickup_date,origin_pickup_date_end,destination_delivery_date_end",
-            count="exact",
+            "unique_id,action,status,origin_pickup_date,origin_pickup_date_end,destination_delivery_date_end,"
+            "origin_pickup_local,origin_pickup_local_end,destination_delivery_local_end",
         )
         .range(start, end)
         .execute()
@@ -67,11 +73,15 @@ def main() -> None:
         raise SystemExit("Supabase client not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.")
 
     batch_size = 500
-    offset = 0
     updated = 0
 
-    while True:
-        rows = _fetch_batch(client, offset, offset + batch_size - 1)
+    count_result = client.table("loadboard_loads").select("unique_id", count="exact").execute()
+    total_count = count_result.count if hasattr(count_result, "count") else len(count_result.data or [])
+
+    offset = 0
+    while offset < total_count:
+        end_index = min(total_count - 1, offset + batch_size - 1)
+        rows = _fetch_batch(client, offset, end_index)
         if not rows:
             break
         for row in rows:

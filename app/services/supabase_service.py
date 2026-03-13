@@ -131,8 +131,13 @@ class SupabaseService:
         if action_value == "deleted":
             return "inactive"
 
-        start_dt = load_data.get('origin_pickup_date')
-        end_dt = load_data.get('origin_pickup_date_end') or load_data.get('destination_delivery_date_end')
+        start_dt = load_data.get('origin_pickup_local') or load_data.get('origin_pickup_date')
+        end_dt = (
+            load_data.get('origin_pickup_local_end')
+            or load_data.get('destination_delivery_local_end')
+            or load_data.get('origin_pickup_date_end')
+            or load_data.get('destination_delivery_date_end')
+        )
         if end_dt is None:
             end_dt = start_dt
 
@@ -143,16 +148,23 @@ class SupabaseService:
             pacific_tz = ZoneInfo("America/Los_Angeles")
         except ZoneInfoNotFoundError:
             pacific_tz = timezone.utc
-        now = datetime.now(tz=pacific_tz)
+        today = datetime.now(tz=pacific_tz).date()
 
         compare_dt = end_dt or start_dt
+        if isinstance(compare_dt, str):
+            try:
+                compare_dt = datetime.fromisoformat(compare_dt.replace("Z", "+00:00"))
+            except ValueError:
+                return "inactive"
+
         if isinstance(compare_dt, datetime):
             if compare_dt.tzinfo is None:
                 compare_dt = compare_dt.replace(tzinfo=pacific_tz)
+            compare_date = compare_dt.astimezone(pacific_tz).date()
         else:
             return "inactive"
 
-        return "active" if compare_dt > now else "inactive"
+        return "active" if compare_date >= today else "inactive"
     
     def remove_load(self, account_data: Dict, load_data: Dict) -> Tuple[bool, str]:
         """Remove a load from Supabase."""
