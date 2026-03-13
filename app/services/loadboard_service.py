@@ -114,6 +114,7 @@ class LoadBoardService:
                 # Process PostLoads
                 for load_data in loads:
                     try:
+                        load_data["raw_xml"] = xml_content
                         self._enrich_load_with_geo(load_data)
                         if self.supabase_service.save_load(account_data, load_data, operation):
                             success_count += 1
@@ -129,6 +130,7 @@ class LoadBoardService:
                 missing_ids: List[str] = []
                 for load_data in loads:
                     try:
+                        load_data["raw_xml"] = xml_content
                         removed, message = self.supabase_service.remove_load(account_data, load_data)
                         if removed:
                             success_count += 1

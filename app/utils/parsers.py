@@ -4,11 +4,24 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional, Dict, Any, List
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
-
 try:
-    PACIFIC_TZ = ZoneInfo("America/Los_Angeles")
-except ZoneInfoNotFoundError:
-    PACIFIC_TZ = timezone.utc
+    import pytz
+except ImportError:  # pragma: no cover
+    pytz = None
+
+def _get_tz(tz_name: str):
+    try:
+        return ZoneInfo(tz_name)
+    except ZoneInfoNotFoundError:
+        if pytz is not None:
+            try:
+                return pytz.timezone(tz_name)
+            except Exception:
+                return timezone.utc
+        return timezone.utc
+
+
+PACIFIC_TZ = _get_tz("America/Los_Angeles")
 
 STATE_TZ_MAP = {
     # Pacific
@@ -71,10 +84,7 @@ def _get_timezone_for_state(state: Optional[str]):
     if not state:
         return PACIFIC_TZ
     tz_name = STATE_TZ_MAP.get(state.upper(), "America/Los_Angeles")
-    try:
-        return ZoneInfo(tz_name)
-    except ZoneInfoNotFoundError:
-        return timezone.utc
+    return _get_tz(tz_name)
 
 
 def _format_date_time(dt: Optional[datetime]) -> Dict[str, Optional[str]]:
@@ -91,7 +101,7 @@ def _convert_local_to_pacific(dt: Optional[datetime], state: Optional[str]) -> D
             "iso": None,
         }
     local_tz = _get_timezone_for_state(state)
-    local_dt = dt.replace(tzinfo=local_tz)
+    local_dt = _attach_tz(dt, local_tz)
     pacific_dt = local_dt.astimezone(PACIFIC_TZ)
     return _format_date_time(pacific_dt)
 
@@ -100,7 +110,13 @@ def _localize_to_state(dt: Optional[datetime], state: Optional[str]) -> Optional
     if not dt:
         return None
     local_tz = _get_timezone_for_state(state)
-    return dt.replace(tzinfo=local_tz)
+    return _attach_tz(dt, local_tz)
+
+
+def _attach_tz(dt: datetime, tzinfo) -> datetime:
+    if hasattr(tzinfo, "localize"):
+        return tzinfo.localize(dt)
+    return dt.replace(tzinfo=tzinfo)
 
 
 class EquipmentTag(str, Enum):

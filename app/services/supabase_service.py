@@ -49,6 +49,7 @@ class SupabaseService:
                 'load_id': load_id,
                 'action': action_value,
                 'status': status_value,
+                'raw_xml': load_data.get('raw_xml'),
                 'company_name': account_data.get('companyname'),
                 'contact_name': account_data.get('contactname'),
                 'contact_phone': account_data.get('contactphone'),
