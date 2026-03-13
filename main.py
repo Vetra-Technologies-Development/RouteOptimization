@@ -761,33 +761,53 @@ async def get_loadboard_loads(limit: int = 50, offset: int = 0, status: Optional
     """Get posted loads (Supabase if configured, otherwise in-memory)."""
     if SUPABASE_ENABLED and supabase_client:
         try:
-            end_index = max(offset, 0) + max(limit, 1) - 1
             normalized_status = status.strip().lower() if status else ""
-            result = (
-                supabase_client.table("loadboard_loads")
-                .select(
-                    "unique_id,tracking_number,user_id,user_name,company_name,"
-                    "contact_name,contact_phone,contact_fax,contact_email,mc_number,dot_number,"
-                    "origin_city,origin_state,origin_postcode,origin_county,origin_country,"
-                    "origin_latitude,origin_longitude,origin_pickup_date,origin_pickup_date_end,"
-                    "origin_pickup_local,origin_pickup_local_end,origin_pickup_pst,origin_pickup_pst_end,"
-                    "destination_city,destination_state,destination_postcode,destination_county,destination_country,"
-                    "destination_latitude,destination_longitude,destination_delivery_date,destination_delivery_date_end,"
-                    "destination_delivery_local,destination_delivery_local_end,destination_delivery_pst,destination_delivery_pst_end,"
-                    "equipment,full_load,length,width,height,weight,load_count,stops,distance,rate,comment,"
-                    "action,status,rpm,load_id,created_at,updated_at",
-                    count="exact"
+            page_limit = max(limit, 1)
+            target_offset = max(offset, 0)
+            needed = page_limit
+            collected = []
+            scanned = 0
+
+            # Fetch in batches due to Supabase default 1000 row cap
+            batch_size = 500
+            while needed > 0:
+                batch_start = scanned
+                batch_end = scanned + batch_size - 1
+                result = (
+                    supabase_client.table("loadboard_loads")
+                    .select(
+                        "unique_id,tracking_number,user_id,user_name,company_name,"
+                        "contact_name,contact_phone,contact_fax,contact_email,mc_number,dot_number,"
+                        "origin_city,origin_state,origin_postcode,origin_county,origin_country,"
+                        "origin_latitude,origin_longitude,origin_pickup_date,origin_pickup_date_end,"
+                        "origin_pickup_local,origin_pickup_local_end,origin_pickup_pst,origin_pickup_pst_end,"
+                        "destination_city,destination_state,destination_postcode,destination_county,destination_country,"
+                        "destination_latitude,destination_longitude,destination_delivery_date,destination_delivery_date_end,"
+                        "destination_delivery_local,destination_delivery_local_end,destination_delivery_pst,destination_delivery_pst_end,"
+                        "equipment,full_load,length,width,height,weight,load_count,stops,distance,rate,comment,"
+                        "action,status,rpm,load_id,created_at,updated_at"
+                    )
+                    .order("updated_at", desc=True)
+                    .range(batch_start, batch_end)
+                    .execute()
                 )
-                .order("updated_at", desc=True)
-                .execute()
-            )
-            rows = result.data or []
-            if normalized_status:
-                rows = [row for row in rows if (row.get("status") or "").lower() == normalized_status]
-            count = len(rows)
-            start = max(offset, 0)
-            end = start + max(limit, 1)
-            return {"count": count, "loads": rows[start:end], "source": "supabase"}
+                rows = result.data or []
+                if not rows:
+                    break
+                if normalized_status:
+                    rows = [row for row in rows if (row.get("status") or "").lower() == normalized_status]
+                if target_offset >= len(rows):
+                    target_offset -= len(rows)
+                else:
+                    slice_rows = rows[target_offset:target_offset + needed]
+                    collected.extend(slice_rows)
+                    needed -= len(slice_rows)
+                    target_offset = 0
+                scanned += batch_size
+
+            count_result = get_loadboard_count(status)
+            count_value = count_result.get("count", 0) if isinstance(count_result, dict) else 0
+            return {"count": count_value, "loads": collected, "source": "supabase"}
         except Exception as e:
             logger.error(f"Supabase fetch failed, falling back to memory: {e}", exc_info=True)
     start = max(offset, 0)
@@ -801,11 +821,24 @@ async def get_loadboard_count(status: Optional[str] = None):
     if SUPABASE_ENABLED and supabase_client:
         try:
             normalized_status = status.strip().lower() if status else ""
-            result = supabase_client.table("loadboard_loads").select("unique_id,status").execute()
-            rows = result.data or []
-            if normalized_status:
-                rows = [row for row in rows if (row.get("status") or "").lower() == normalized_status]
-            return {"count": len(rows), "source": "supabase"}
+            total = 0
+            batch_size = 1000
+            offset = 0
+            while True:
+                result = (
+                    supabase_client.table("loadboard_loads")
+                    .select("unique_id,status")
+                    .range(offset, offset + batch_size - 1)
+                    .execute()
+                )
+                rows = result.data or []
+                if not rows:
+                    break
+                if normalized_status:
+                    rows = [row for row in rows if (row.get("status") or "").lower() == normalized_status]
+                total += len(rows)
+                offset += batch_size
+            return {"count": total, "source": "supabase"}
         except Exception as e:
             logger.error(f"Supabase count failed, falling back to memory: {e}", exc_info=True)
     return {"count": len(LOADBOARD_POSTS), "source": "memory"}
