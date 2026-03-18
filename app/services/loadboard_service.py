@@ -17,6 +17,7 @@ class LoadBoardService:
     def __init__(self, supabase_service: SupabaseService):
         """Initialize with Supabase service."""
         self.supabase_service = supabase_service
+        self._geo_cache: Dict[str, Tuple[float, float]] = {}
 
     def _parse_rate_value(self, rate_value: Optional[str]) -> Optional[float]:
         if not rate_value:
@@ -29,6 +30,12 @@ class LoadBoardService:
 
     def _is_valid_coord(self, value: Optional[float]) -> bool:
         return value is not None and value != 0
+
+    def _geo_key(self, city: Optional[str], state: Optional[str], postcode: Optional[str], country: Optional[str]) -> Optional[str]:
+        address = build_address(city, state, postcode, country)
+        if not address:
+            return None
+        return address.lower()
 
     def _enrich_load_with_geo(self, load_data: Dict[str, Any]) -> None:
         mapbox_key = settings.MAPBOX_API_KEY
@@ -47,12 +54,37 @@ class LoadBoardService:
                         load_data.get("origin_postcode"),
                         load_data.get("origin_country"),
                     )
-                    if address:
+                    key = self._geo_key(
+                        load_data.get("origin_city"),
+                        load_data.get("origin_state"),
+                        load_data.get("origin_postcode"),
+                        load_data.get("origin_country"),
+                    )
+                    coords = None
+                    if key:
+                        coords = self._geo_cache.get(key)
+                        if not coords:
+                            cached = self.supabase_service.get_geolocation(key)
+                            if cached:
+                                coords = (cached["latitude"], cached["longitude"])
+                                self._geo_cache[key] = coords
+                    if not coords and address:
                         coords = geocode_location(address, mapbox_key)
-                        if coords:
-                            origin_lat, origin_lon = coords
-                            load_data["origin_latitude"] = origin_lat
-                            load_data["origin_longitude"] = origin_lon
+                        if coords and key:
+                            self._geo_cache[key] = coords
+                            self.supabase_service.upsert_geolocation(
+                                key,
+                                load_data.get("origin_city"),
+                                load_data.get("origin_state"),
+                                load_data.get("origin_postcode"),
+                                load_data.get("origin_country"),
+                                coords[0],
+                                coords[1],
+                            )
+                    if coords:
+                        origin_lat, origin_lon = coords
+                        load_data["origin_latitude"] = origin_lat
+                        load_data["origin_longitude"] = origin_lon
 
                 if not (self._is_valid_coord(dest_lat) and self._is_valid_coord(dest_lon)):
                     address = build_address(
@@ -61,12 +93,37 @@ class LoadBoardService:
                         load_data.get("destination_postcode"),
                         load_data.get("destination_country"),
                     )
-                    if address:
+                    key = self._geo_key(
+                        load_data.get("destination_city"),
+                        load_data.get("destination_state"),
+                        load_data.get("destination_postcode"),
+                        load_data.get("destination_country"),
+                    )
+                    coords = None
+                    if key:
+                        coords = self._geo_cache.get(key)
+                        if not coords:
+                            cached = self.supabase_service.get_geolocation(key)
+                            if cached:
+                                coords = (cached["latitude"], cached["longitude"])
+                                self._geo_cache[key] = coords
+                    if not coords and address:
                         coords = geocode_location(address, mapbox_key)
-                        if coords:
-                            dest_lat, dest_lon = coords
-                            load_data["destination_latitude"] = dest_lat
-                            load_data["destination_longitude"] = dest_lon
+                        if coords and key:
+                            self._geo_cache[key] = coords
+                            self.supabase_service.upsert_geolocation(
+                                key,
+                                load_data.get("destination_city"),
+                                load_data.get("destination_state"),
+                                load_data.get("destination_postcode"),
+                                load_data.get("destination_country"),
+                                coords[0],
+                                coords[1],
+                            )
+                    if coords:
+                        dest_lat, dest_lon = coords
+                        load_data["destination_latitude"] = dest_lat
+                        load_data["destination_longitude"] = dest_lon
             except Exception as exc:
                 logger.warning(f"Mapbox geocoding failed: {exc}")
 

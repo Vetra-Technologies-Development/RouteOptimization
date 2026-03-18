@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 class SupabaseService:
     """Service for Supabase database operations."""
+
+    GEOLOCATION_TABLE = "geolocation_cache"
     
     def __init__(self, client):
         """Initialize with Supabase client."""
@@ -126,6 +128,60 @@ class SupabaseService:
             return json.dumps(equipment_value)
         except (TypeError, ValueError):
             return None
+
+    def get_geolocation(self, key: str) -> Optional[Dict[str, float]]:
+        if not self.client or not key:
+            return None
+        try:
+            batch_size = 500
+            offset = 0
+            while True:
+                result = (
+                    self.client.table(self.GEOLOCATION_TABLE)
+                    .select("key,latitude,longitude")
+                    .range(offset, offset + batch_size - 1)
+                    .execute()
+                )
+                rows = result.data or []
+                if not rows:
+                    return None
+                for row in rows:
+                    if row.get("key") == key:
+                        lat = row.get("latitude")
+                        lon = row.get("longitude")
+                        if lat is not None and lon is not None:
+                            return {"latitude": lat, "longitude": lon}
+                offset += batch_size
+        except Exception as e:
+            logger.error(f"Error fetching geolocation cache: {e}", exc_info=True)
+            return None
+
+    def upsert_geolocation(
+        self,
+        key: str,
+        city: Optional[str],
+        state: Optional[str],
+        postcode: Optional[str],
+        country: Optional[str],
+        latitude: float,
+        longitude: float,
+    ) -> None:
+        if not self.client or not key:
+            return
+        try:
+            record = {
+                "key": key,
+                "city": city,
+                "state": state,
+                "postcode": postcode,
+                "country": country,
+                "latitude": latitude,
+                "longitude": longitude,
+                "updated_at": datetime.utcnow().isoformat(),
+            }
+            self.client.table(self.GEOLOCATION_TABLE).upsert(record, on_conflict="key").execute()
+        except Exception as e:
+            logger.error(f"Error upserting geolocation cache: {e}", exc_info=True)
 
     def _calculate_status(self, load_data: Dict[str, Any], action_value: str) -> str:
         if action_value == "deleted":
